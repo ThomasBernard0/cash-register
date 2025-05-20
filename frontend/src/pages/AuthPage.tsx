@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import { postLogin } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
-export default function AuthPage() {
+const AuthPage: React.FC = () => {
   const { login, account } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -34,9 +34,9 @@ export default function AuthPage() {
   useEffect(() => {
     if (account) {
       if (account.isSuperAdmin) {
-        navigate("/A");
+        navigate("/admin");
       } else {
-        navigate("/B");
+        navigate("/account");
       }
     }
   }, [account, navigate]);
@@ -87,4 +87,6 @@ export default function AuthPage() {
       </Paper>
     </Container>
   );
-}
+};
+
+export default AuthPage;
