@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const existing = await prisma.account.findFirst({
-    where: { isSuperadmin: true },
+    where: { isSuperAdmin: true },
   });
   if (existing) {
     console.log('Super admin already exists.');
@@ -20,7 +20,7 @@ async function main() {
     data: {
       name: name,
       password: hashedPassword,
-      isSuperadmin: true,
+      isSuperAdmin: true,
     },
   });
   console.log('✅ Super admin created!');
