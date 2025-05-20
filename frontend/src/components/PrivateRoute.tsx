@@ -6,7 +6,7 @@ const PrivateRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
   const { token } = useAuth();
 
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return element;
