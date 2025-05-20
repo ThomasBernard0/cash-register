@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")!).render(
             path="/admin"
             element={<AdminPrivateRoute element={<AdminDashboardPage />} />}
           />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

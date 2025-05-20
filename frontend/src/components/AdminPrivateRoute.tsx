@@ -6,7 +6,7 @@ const AdminPrivateRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
   const { token, account } = useAuth();
 
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (!account?.isSuperAdmin) {
