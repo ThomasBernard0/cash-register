@@ -8,10 +8,75 @@ datasource db {
 }
 
 model Account {
-  id           Int      @id @default(autoincrement())
-  name         String   @unique
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
   password     String
-  isSuperAdmin Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isSuperAdmin Boolean   @default(false)
+  sections     Section[]
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+}
+
+model Section {
+  id        String  @id @default(uuid())
+  title     String
+  color     String
+  order     Int
+  items     Item[]
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId Int
+}
+
+model Item {
+  id          String  @id @default(uuid())
+  label       String
+  priceInCent Float
+  order       Int
+  section     Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId   String
+}
+
+model Session {
+  id                 String        @id @default(uuid())
+  commands           Command[]
+  totalRevenueInCent Int
+  createdAt          DateTime      @default(now())
+  status             SessionStatus
+  account            Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId          Int
+}
+
+enum SessionStatus {
+  active
+  completed
+}
+
+model Command {
+  id               Int           @id @default(autoincrement())
+  items            CommandItem[]
+  totalPriceInCent Int
+  createdAt        DateTime      @default(now())
+  type             CommandType
+  status           CommandStatus
+  session          Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId        String
+}
+
+enum CommandType {
+  internal
+  external
+}
+
+enum CommandStatus {
+  pending
+  validated
+}
+
+model CommandItem {
+  id          String  @id @default(uuid())
+  label       String
+  priceInCent Float
+  quantity    Int     @default(1)
+  command     Command @relation(fields: [commandId], references: [id], onDelete: Cascade)
+  commandId   Int
 }
