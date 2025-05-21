@@ -10,7 +10,7 @@ export const useAllAccounts = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const res = await api.get<AccountSummary[]>("/admin/accounts");
+        const res = await api.get<AccountSummary[]>("/account");
         setAccounts(res.data);
       } catch (err: any) {
         console.error("Failed to fetch accounts:", err);
@@ -31,7 +31,7 @@ export const createAccount = async (
   password: string
 ): Promise<AccountSummary> => {
   try {
-    const res = await api.post<AccountSummary>("/api/account", {
+    const res = await api.post<AccountSummary>("/account", {
       name,
       password,
     });
@@ -47,7 +47,7 @@ export const changeAccountPassword = async (
   password: string
 ): Promise<{ message: string }> => {
   try {
-    const res = await api.put<{ message: string }>("/api/account/password", {
+    const res = await api.put<{ message: string }>("/account/password", {
       id,
       password,
     });
