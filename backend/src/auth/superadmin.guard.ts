@@ -11,7 +11,7 @@ export class SuperAdminGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const account = request.user;
 
-    if (!request?.isSuperAdmin) {
+    if (!account?.isSuperAdmin) {
       throw new ForbiddenException('Only superadmin can perform this action');
     }
 
