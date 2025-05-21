@@ -3,9 +3,11 @@ import type { JSX } from "react";
 import { useAuth } from "../context/AuthContext";
 
 const PrivateRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
-  const { token } = useAuth();
+  const { authState } = useAuth();
 
-  if (!token) {
+  if (authState.loading) return;
+
+  if (!authState.token) {
     return <Navigate to="/" replace />;
   }
 

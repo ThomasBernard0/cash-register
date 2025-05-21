@@ -10,9 +10,14 @@ interface JwtPayload {
   exp?: number;
 }
 
-interface AuthContextType {
+interface AuthStateProps {
   token: string | null;
   account: { name: string; isSuperAdmin: boolean } | null;
+  loading: boolean;
+}
+
+interface AuthContextType {
+  authState: AuthStateProps;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -32,25 +37,29 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
-  );
-  const [account, setAccount] = useState<{
-    name: string;
-    isSuperAdmin: boolean;
-  } | null>(null);
+  const [authState, setAuthState] = useState<AuthStateProps>({
+    token: localStorage.getItem("token"),
+    account: null,
+    loading: true,
+  });
 
   const login = (token: string) => {
-    setToken(token);
-    localStorage.setItem("token", token);
     const decoded = jwtDecode<JwtPayload>(token);
-    setAccount({ name: decoded.name, isSuperAdmin: decoded.isSuperAdmin });
+    localStorage.setItem("token", token);
+    setAuthState({
+      token,
+      account: { name: decoded.name, isSuperAdmin: decoded.isSuperAdmin },
+      loading: false,
+    });
   };
 
   const logout = () => {
-    setToken(null);
     localStorage.removeItem("token");
-    setAccount(null);
+    setAuthState({
+      token: null,
+      account: null,
+      loading: false,
+    });
   };
 
   const isTokenExpired = (token: string): boolean => {
@@ -68,10 +77,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken && !isTokenExpired(storedToken)) {
-      setToken(storedToken);
       try {
         const decoded = jwtDecode<JwtPayload>(storedToken);
-        setAccount({ name: decoded.name, isSuperAdmin: decoded.isSuperAdmin });
+        setAuthState({
+          token: storedToken,
+          account: { name: decoded.name, isSuperAdmin: decoded.isSuperAdmin },
+          loading: false,
+        });
       } catch (e) {
         console.error("Token decoding failed", e);
         logout();
@@ -81,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
   return (
-    <AuthContext.Provider value={{ token, account, login, logout }}>
+    <AuthContext.Provider value={{ authState, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

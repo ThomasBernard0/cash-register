@@ -13,7 +13,7 @@ import { postLogin } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
 const AuthPage: React.FC = () => {
-  const { login, account } = useAuth();
+  const { login, authState } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -32,14 +32,14 @@ const AuthPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (account) {
-      if (account.isSuperAdmin) {
+    if (authState.account) {
+      if (authState.account.isSuperAdmin) {
         navigate("/admin");
       } else {
         navigate("/account");
       }
     }
-  }, [account, navigate]);
+  }, [authState.account, navigate]);
 
   return (
     <Container maxWidth="sm">

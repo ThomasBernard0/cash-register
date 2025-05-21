@@ -3,13 +3,15 @@ import type { JSX } from "react";
 import { useAuth } from "../context/AuthContext";
 
 const AdminPrivateRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
-  const { token, account } = useAuth();
+  const { authState } = useAuth();
 
-  if (!token) {
+  if (authState.loading) return;
+
+  if (!authState.token) {
     return <Navigate to="/" replace />;
   }
 
-  if (!account?.isSuperAdmin) {
+  if (!authState.account?.isSuperAdmin) {
     return <Navigate to="/account" replace />;
   }
 
