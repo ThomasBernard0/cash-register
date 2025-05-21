@@ -13,10 +13,13 @@ import {
   Box,
 } from "@mui/material";
 import { useAllAccounts } from "../../api/account";
-import CreateAccountModal from "../../components/superadmin/CreateAccountModale";
+import CreateAccountModal from "../../components/superadmin/CreateAccountModal";
+import EditPasswordModal from "../../components/superadmin/EditPasswordModal";
 
 const AdminDashboard: React.FC = () => {
-  const [createModale, setCreateModale] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
   const { accounts, loading, error } = useAllAccounts();
 
   if (loading) {
@@ -27,8 +30,14 @@ const AdminDashboard: React.FC = () => {
     return <div style={{ color: "red" }}>{error}</div>;
   }
 
-  const handleEditPassword = (id: number) => {
-    console.log(`Modifier le mot de passe pour l'utilisateur ${id}`);
+  const handleEditModalOpen = (id: number) => {
+    setEditId(id);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditModalClose = () => {
+    setEditId(null);
+    setIsEditModalOpen(false);
   };
 
   return (
@@ -45,7 +54,7 @@ const AdminDashboard: React.FC = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => setCreateModale(true)}
+          onClick={() => setIsCreateModalOpen(true)}
         >
           Créer un compte
         </Button>
@@ -66,7 +75,7 @@ const AdminDashboard: React.FC = () => {
                 <TableCell align="right">
                   <Button
                     variant="outlined"
-                    onClick={() => handleEditPassword(account.id)}
+                    onClick={() => handleEditModalOpen(account.id)}
                   >
                     Modifier le mot de passe
                   </Button>
@@ -77,8 +86,13 @@ const AdminDashboard: React.FC = () => {
         </Table>
       </TableContainer>
       <CreateAccountModal
-        open={createModale}
-        onClose={() => setCreateModale(false)}
+        open={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+      <EditPasswordModal
+        open={isEditModalOpen}
+        onClose={handleEditModalClose}
+        accountId={editId}
       />
     </Container>
   );
