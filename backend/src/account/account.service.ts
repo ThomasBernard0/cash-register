@@ -14,8 +14,11 @@ export class AccountService {
     });
   }
 
-  async getAllAccounts(): Promise<AccountSummary[]> {
+  async getNonSuperAdminAccounts(): Promise<AccountSummary[]> {
     return this.prisma.account.findMany({
+      where: {
+        isSuperAdmin: false,
+      },
       select: {
         id: true,
         name: true,

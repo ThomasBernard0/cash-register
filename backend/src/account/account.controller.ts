@@ -14,8 +14,8 @@ export class AccountController {
   constructor(private accountService: AccountService) {}
 
   @Get()
-  async findAll(): Promise<AccountSummary[]> {
-    return await this.accountService.getAllAccounts();
+  async findAllNonSuperAdmins(): Promise<AccountSummary[]> {
+    return await this.accountService.getNonSuperAdminAccounts();
   }
 
   @Post()
