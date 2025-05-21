@@ -10,7 +10,7 @@ import {
 
 @Controller('api/account')
 @UseGuards(JwtAuthGuard, SuperAdminGuard)
-export class AuthController {
+export class AccountController {
   constructor(private accountService: AccountService) {}
 
   @Get()
