@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -13,8 +13,10 @@ import {
   Box,
 } from "@mui/material";
 import { useAllAccounts } from "../../api/account";
+import CreateAccountModal from "../../components/superadmin/CreateAccountModale";
 
 const AdminDashboard: React.FC = () => {
+  const [createModale, setCreateModale] = useState(false);
   const { accounts, loading, error } = useAllAccounts();
 
   if (loading) {
@@ -27,10 +29,6 @@ const AdminDashboard: React.FC = () => {
 
   const handleEditPassword = (id: number) => {
     console.log(`Modifier le mot de passe pour l'utilisateur ${id}`);
-  };
-
-  const handleCreateAccount = () => {
-    console.log("Créer un nouveau compte");
   };
 
   return (
@@ -47,7 +45,7 @@ const AdminDashboard: React.FC = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleCreateAccount}
+          onClick={() => setCreateModale(true)}
         >
           Créer un compte
         </Button>
@@ -78,6 +76,10 @@ const AdminDashboard: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <CreateAccountModal
+        open={createModale}
+        onClose={() => setCreateModale(false)}
+      />
     </Container>
   );
 };
