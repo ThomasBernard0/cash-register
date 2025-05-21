@@ -12,15 +12,19 @@ import {
   Button,
   Box,
 } from "@mui/material";
-
-const accounts = [
-  { id: 1, name: "Jean Dupont" },
-  { id: 2, name: "Alice Martin" },
-  { id: 3, name: "Marc Lemoine" },
-];
+import { useAllAccounts } from "../../api/account";
 
 const AdminDashboard: React.FC = () => {
-  if (!accounts) return;
+  const { accounts, loading, error } = useAllAccounts();
+
+  if (loading) {
+    return <div>Loading accounts...</div>;
+  }
+
+  if (error) {
+    return <div style={{ color: "red" }}>{error}</div>;
+  }
+
   const handleEditPassword = (id: number) => {
     console.log(`Modifier le mot de passe pour l'utilisateur ${id}`);
   };
