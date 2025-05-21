@@ -14,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async loginWithCredentials(name: string, password: string) {
+  async login(name: string, password: string) {
     const account = await this.accountService.findByName(name);
     if (!account) {
       throw new UnauthorizedException('Invalid credentials');
@@ -24,24 +24,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
     const { password: _, ...result } = account;
-    return this.login(result);
-  }
-
-  async register(name: string, password: string) {
-    const existingAccount = await this.accountService.findByName(name);
-    if (existingAccount) {
-      throw new ForbiddenException('Name already in use');
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const account = await this.accountService.create(name, hashedPassword);
-    return this.login(account);
-  }
-
-  async login(account: any) {
     const payload = {
-      sub: account.id,
-      name: account.name,
-      isSuperAdmin: account.isSuperAdmin,
+      sub: result.id,
+      name: result.name,
+      isSuperAdmin: result.isSuperAdmin,
     };
     return {
       access_token: this.jwtService.sign(payload),
