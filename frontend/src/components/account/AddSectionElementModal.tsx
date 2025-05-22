@@ -14,7 +14,7 @@ import {
   MenuItem,
   type SelectChangeEvent,
 } from "@mui/material";
-import { useSections } from "../../api/section";
+import { useSections, createSection, createItem } from "../../api/section";
 
 const COLORS = [
   "#F87171",
@@ -28,17 +28,17 @@ const COLORS = [
 type CreateModalProps = {
   open: boolean;
   onClose: () => void;
-  onCreateSection: (data: { title: string; color: string }) => void;
-  onCreateItem: (data: { label: string; priceInCent: number }) => void;
+  onCreated: () => void;
 };
 
 const AddSectionElementModal: React.FC<CreateModalProps> = ({
   open,
   onClose,
-  onCreateSection,
-  onCreateItem,
+  onCreated,
 }) => {
   const [mode, setMode] = useState<"section" | "item">("section");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const [title, setTitle] = useState<string>("");
   const [color, setColor] = useState<string>(COLORS[0]);
@@ -53,19 +53,45 @@ const AddSectionElementModal: React.FC<CreateModalProps> = ({
     setSectionId(event.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setError(null);
     if (mode === "section") {
-      onCreateSection({ title, color });
+      if (!title || !color) {
+        setError("Title and color are required.");
+        return;
+      }
     } else {
+      if (!sectionId || !label || !price) {
+        setError("Section, label and price are required.");
+        return;
+      }
       const priceInCent = Math.round(parseFloat(price) * 100);
-      if (isNaN(priceInCent)) return;
-      onCreateItem({ label, priceInCent });
+      if (isNaN(priceInCent)) {
+        setError("Invalid price.");
+        return;
+      }
     }
-    setTitle("");
-    setColor(COLORS[0]);
-    setLabel("");
-    setPrice("");
-    onClose();
+
+    setLoading(true);
+    try {
+      if (mode === "section") {
+        await createSection(title, color);
+      } else {
+        const priceInCent = Math.round(parseFloat(price) * 100);
+        await createItem(label, priceInCent, sectionId);
+      }
+      setTitle("");
+      setColor(COLORS[0]);
+      setSectionId("");
+      setLabel("");
+      setPrice("");
+      onCreated();
+      onClose();
+    } catch (err: any) {
+      setError(err.message || "Failed to create item/section.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isFormValid = () => {

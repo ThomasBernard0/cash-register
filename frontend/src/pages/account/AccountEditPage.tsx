@@ -31,14 +31,9 @@ const AccountHubPage: React.FC = () => {
       <AddSectionElementModal
         open={isAddElementModalOpen}
         onClose={() => {
-          return;
+          setIsAddElementModalOpen(false);
         }}
-        onCreateSection={() => {
-          return;
-        }}
-        onCreateItem={() => {
-          return;
-        }}
+        onCreated={refetch}
       />
     </>
   );
