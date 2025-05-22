@@ -20,7 +20,7 @@ const AdminDashboard: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
-  const { accounts, loading, error } = useAllAccounts();
+  const { accounts, loading, error, refetch } = useAllAccounts();
 
   if (loading) {
     return <div>Loading accounts...</div>;
@@ -88,6 +88,7 @@ const AdminDashboard: React.FC = () => {
       <CreateAccountModal
         open={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
+        onCreated={refetch}
       />
       <EditPasswordModal
         open={isEditModalOpen}

@@ -15,11 +15,13 @@ import { createAccount } from "../../api/account";
 interface CreateAccountModalProps {
   open: boolean;
   onClose: () => void;
+  onCreated: () => void;
 }
 
 const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
   open,
   onClose,
+  onCreated,
 }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -38,6 +40,7 @@ const CreateAccountModal: React.FC<CreateAccountModalProps> = ({
       await createAccount(name, password);
       setName("");
       setPassword("");
+      onCreated();
       onClose();
     } catch (err: any) {
       setError(err.message || "Failed to create account.");

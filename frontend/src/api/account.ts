@@ -7,23 +7,23 @@ export const useAllAccounts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const res = await api.get<AccountSummary[]>("/account");
-        setAccounts(res.data);
-      } catch (err: any) {
-        console.error("Failed to fetch accounts:", err);
-        setError("Unable to fetch account list.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchAccounts = async () => {
+    try {
+      const res = await api.get<AccountSummary[]>("/account");
+      setAccounts(res.data);
+    } catch (err: any) {
+      console.error("Failed to fetch accounts:", err);
+      setError("Unable to fetch account list.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchAccounts();
   }, []);
 
-  return { accounts, loading, error };
+  return { accounts, loading, error, refetch: fetchAccounts };
 };
 
 export const createAccount = async (
