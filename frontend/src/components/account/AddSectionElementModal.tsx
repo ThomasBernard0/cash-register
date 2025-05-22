@@ -8,7 +8,13 @@ import {
   TextField,
   Button,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  type SelectChangeEvent,
 } from "@mui/material";
+import { useSections } from "../../api/section";
 
 const COLORS = [
   "#F87171",
@@ -34,11 +40,18 @@ const AddSectionElementModal: React.FC<CreateModalProps> = ({
 }) => {
   const [mode, setMode] = useState<"section" | "item">("section");
 
-  const [title, setTitle] = useState("");
-  const [color, setColor] = useState(COLORS[0]);
+  const [title, setTitle] = useState<string>("");
+  const [color, setColor] = useState<string>(COLORS[0]);
 
-  const [label, setLabel] = useState("");
-  const [price, setPrice] = useState("");
+  const [sectionId, setSectionId] = useState<string>("");
+  const [label, setLabel] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+
+  const { sections } = useSections();
+
+  const handleSectionChange = (event: SelectChangeEvent) => {
+    setSectionId(event.target.value);
+  };
 
   const handleSubmit = () => {
     if (mode === "section") {
@@ -55,6 +68,16 @@ const AddSectionElementModal: React.FC<CreateModalProps> = ({
     onClose();
   };
 
+  const isFormValid = () => {
+    if (mode === "section") {
+      return title.trim() !== "" && color.trim() !== "";
+    } else {
+      return (
+        label.trim() !== "" && price.trim() !== "" && sectionId.trim() !== ""
+      );
+    }
+  };
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box
@@ -67,14 +90,14 @@ const AddSectionElementModal: React.FC<CreateModalProps> = ({
           p: 4,
           borderRadius: 2,
           boxShadow: 24,
-          width: 400,
-          height: "40%",
+          width: "50%",
+          height: "50%",
           display: "flex",
           flexDirection: "column",
         }}
       >
         <Typography variant="h6" mb={2}>
-          Ajouter une {mode === "section" ? "section" : "item"}
+          Ajouter {mode === "section" ? "une section" : "un item"}
         </Typography>
 
         <ToggleButtonGroup
@@ -123,6 +146,21 @@ const AddSectionElementModal: React.FC<CreateModalProps> = ({
           </>
         ) : (
           <>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel id="section-select-label">Section</InputLabel>
+              <Select
+                labelId="section-select-label"
+                value={sectionId}
+                label="Section"
+                onChange={handleSectionChange}
+              >
+                {sections.map((section) => (
+                  <MenuItem key={section.id} value={section.id}>
+                    {section.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
               label="Label"
               fullWidth
@@ -141,7 +179,12 @@ const AddSectionElementModal: React.FC<CreateModalProps> = ({
           </>
         )}
         <Box sx={{ mt: "auto", pt: 2 }}>
-          <Button variant="contained" fullWidth onClick={handleSubmit}>
+          <Button
+            variant="contained"
+            fullWidth
+            disabled={!isFormValid()}
+            onClick={handleSubmit}
+          >
             Ajouter
           </Button>
         </Box>

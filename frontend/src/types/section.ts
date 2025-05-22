@@ -11,4 +11,5 @@ export type Item = {
   label: string;
   priceInCent: number;
   order: number;
+  sectionId: string;
 };
