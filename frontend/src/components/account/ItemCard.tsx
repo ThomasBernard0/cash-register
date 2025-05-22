@@ -8,9 +8,22 @@ type ItemCardProps = {
 
 const ItemCard: React.FC<ItemCardProps> = ({ label }) => {
   return (
-    <Card>
-      <CardContent>
-        <Typography>{label}</Typography>
+    <Card
+      sx={{
+        minHeight: 100,
+        maxHeight: 180,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 2,
+        borderRadius: 2,
+        boxShadow: 2,
+        textAlign: "center",
+        cursor: "pointer",
+      }}
+    >
+      <CardContent sx={{ textAlign: "center" }}>
+        <Typography noWrap>{label}</Typography>
       </CardContent>
     </Card>
   );

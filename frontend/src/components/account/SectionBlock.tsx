@@ -17,12 +17,12 @@ const SectionBlock: React.FC<SectionBlockProps> = ({ title, items }) => {
       </Typography>
       <Grid container spacing={2}>
         {items.map((item) => (
-          <Grid size={4} key={item.id}>
+          <Grid size={3} key={item.id}>
             <ItemCard id={item.id} label={item.label} />
           </Grid>
         ))}
         {items.length === 0 && (
-          <Grid size={4}>
+          <Grid size={3}>
             <Paper elevation={0} sx={{ p: 2, color: "gray" }}>
               No items in this section.
             </Paper>
