@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,18 +11,30 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class SectionService {
   constructor(private prisma: PrismaService) {}
 
-  async createSection(data: SectionData): Promise<Section> {
+  async getSectionById(id: string): Promise<Section | null> {
+    return this.prisma.section.findUnique({ where: { id } });
+  }
+
+  verifyAccountOwnership(requestAccountId: number, resourceAccountId: number) {
+    if (requestAccountId !== resourceAccountId) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
+  }
+
+  async createSection(
+    data: CreateSectionDto,
+    accountId: number,
+  ): Promise<Section> {
     try {
-      return this.prisma.section.create({ data });
+      return this.prisma.section.create({
+        data: { ...data, accountId },
+      });
     } catch (error) {
       throw new BadRequestException('Failed to create section');
     }
   }
 
-  async updateSection(
-    id: string,
-    data: Partial<SectionData>,
-  ): Promise<Section> {
+  async updateSection(id: string, data: UpdateSectionDto): Promise<Section> {
     let existing: Section | null;
     try {
       existing = await this.prisma.section.findUnique({ where: { id } });
@@ -53,7 +66,11 @@ export class SectionService {
     }
   }
 
-  async addItemToSection(data: ItemData): Promise<Item> {
+  async getItemById(id: string): Promise<Item | null> {
+    return this.prisma.item.findUnique({ where: { id } });
+  }
+
+  async addItemToSection(data: CreateItemDto): Promise<Item> {
     let section: Section | null;
     try {
       section = await this.prisma.section.findUnique({
@@ -71,10 +88,7 @@ export class SectionService {
     }
   }
 
-  async updateItem(
-    id: string,
-    data: Partial<Omit<ItemData, 'sectionId'>>,
-  ): Promise<Item> {
+  async updateItem(id: string, data: UpdateItemDto): Promise<Item> {
     let existing: Item | null;
     try {
       existing = await this.prisma.item.findUnique({ where: { id } });
