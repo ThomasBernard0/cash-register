@@ -11,6 +11,22 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class SectionService {
   constructor(private prisma: PrismaService) {}
 
+  async getAllSectionsWithItems(accountId: number): Promise<Section[]> {
+    try {
+      return await this.prisma.section.findMany({
+        where: { accountId },
+        include: {
+          items: {
+            orderBy: { order: 'asc' },
+          },
+        },
+        orderBy: { order: 'asc' },
+      });
+    } catch (error) {
+      throw new BadRequestException('Failed to fetch sections');
+    }
+  }
+
   async getSectionById(id: string): Promise<Section | null> {
     return this.prisma.section.findUnique({ where: { id } });
   }

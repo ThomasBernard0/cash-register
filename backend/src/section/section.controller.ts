@@ -19,6 +19,12 @@ import { Section, Item } from '@prisma/client';
 export class SectionController {
   constructor(private readonly sectionService: SectionService) {}
 
+  @Get()
+  async getAllSections(@Req() req) {
+    const accountId = req.user.accountId;
+    return this.sectionService.getAllSectionsWithItems(accountId);
+  }
+
   @Post()
   async createSection(
     @Body() data: CreateSectionDto,
