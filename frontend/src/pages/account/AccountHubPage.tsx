@@ -1,6 +1,6 @@
 import React from "react";
 import SectionGrid from "../../components/account/SectionGrid";
-import type { Section } from "../../types/sectionGrid";
+import type { Section } from "../../types/section";
 
 const AccountHubPage: React.FC = () => {
   const mockSections: Section[] = [

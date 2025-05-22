@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Paper, Grid } from "@mui/material";
 import ItemCard from "./ItemCard";
-import type { Item } from "../../types/sectionGrid";
+import type { Item } from "../../types/section";
 
 type SectionBlockProps = {
   id: number;
