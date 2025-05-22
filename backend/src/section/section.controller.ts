@@ -14,8 +14,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SectionService } from './section.service';
 import { Section, Item } from '@prisma/client';
 
+@Controller('api/sections')
 @UseGuards(JwtAuthGuard)
-@Controller('sections')
 export class SectionController {
   constructor(private readonly sectionService: SectionService) {}
 
