@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "./api";
-import type { Section } from "../types/section";
+import type { Item, Section } from "../types/section";
 
 export const useSections = () => {
   const [sections, setSections] = useState<Section[]>([]);
@@ -29,4 +29,38 @@ export const useSections = () => {
     error,
     refetch: fetchSections,
   };
+};
+
+export const createSection = async (
+  title: string,
+  color: string
+): Promise<Section> => {
+  try {
+    const res = await api.post<Section>("/sections", {
+      title,
+      color,
+    });
+    return res.data;
+  } catch (error: any) {
+    console.error("Failed to create account:", error);
+    throw new Error("Unable to create account. It may already exist.");
+  }
+};
+
+export const createItem = async (
+  label: string,
+  priceInCent: number,
+  sectionId: string
+): Promise<Item> => {
+  try {
+    const res = await api.post<Item>("/sections/item", {
+      label,
+      priceInCent,
+      sectionId,
+    });
+    return res.data;
+  } catch (error: any) {
+    console.error("Failed to create account:", error);
+    throw new Error("Unable to create account. It may already exist.");
+  }
 };
