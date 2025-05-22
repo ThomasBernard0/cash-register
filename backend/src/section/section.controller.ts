@@ -59,13 +59,9 @@ export class SectionController {
   }
 
   @Post('/items')
-  async createItem(
-    @Param('sectionId', new ParseUUIDPipe()) sectionId: string,
-    @Body() data: CreateItemDto,
-    @Req() req,
-  ): Promise<Item> {
+  async createItem(@Body() data: CreateItemDto, @Req() req): Promise<Item> {
     const accountId = req.user.accountId;
-    const section = await this.sectionService.getSectionById(sectionId);
+    const section = await this.sectionService.getSectionById(data.sectionId);
     this.sectionService.verifyAccountOwnership(accountId, section.accountId);
     return this.sectionService.addItemToSection(data);
   }
