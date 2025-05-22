@@ -21,7 +21,7 @@ export class SectionController {
 
   @Get()
   async getAllSections(@Req() req) {
-    const accountId = req.user.accountId;
+    const accountId: number = req.user.accountId;
     return this.sectionService.getAllSectionsWithItems(accountId);
   }
 
@@ -30,7 +30,7 @@ export class SectionController {
     @Body() data: CreateSectionDto,
     @Req() req,
   ): Promise<Section> {
-    const accountId = req.user.accountId;
+    const accountId: number = req.user.accountId;
     return this.sectionService.createSection(data, accountId);
   }
 
@@ -40,10 +40,8 @@ export class SectionController {
     @Body() data: UpdateSectionDto,
     @Req() req,
   ): Promise<Section> {
-    const accountId = req.user.accountId;
-    const section = await this.sectionService.getSectionById(id);
-    this.sectionService.verifyAccountOwnership(accountId, section.accountId);
-    return this.sectionService.updateSection(id, data);
+    const accountId: number = req.user.accountId;
+    return this.sectionService.updateSection(accountId, id, data);
   }
 
   @Delete(':id')
@@ -52,18 +50,14 @@ export class SectionController {
     @Req() req,
   ): Promise<{ message: string }> {
     const accountId = req.user.accountId;
-    const section = await this.sectionService.getSectionById(id);
-    this.sectionService.verifyAccountOwnership(accountId, section.accountId);
-    await this.sectionService.deleteSection(id);
+    await this.sectionService.deleteSection(accountId, id);
     return { message: 'Section deleted' };
   }
 
   @Post('/items')
   async createItem(@Body() data: CreateItemDto, @Req() req): Promise<Item> {
     const accountId = req.user.accountId;
-    const section = await this.sectionService.getSectionById(data.sectionId);
-    this.sectionService.verifyAccountOwnership(accountId, section.accountId);
-    return this.sectionService.addItemToSection(data);
+    return this.sectionService.addItemToSection(accountId, data);
   }
 
   @Patch('items/:itemId')
@@ -73,9 +67,7 @@ export class SectionController {
     @Req() req,
   ): Promise<Item> {
     const accountId = req.user.accountId;
-    const section = await this.sectionService.getSectionById(data.sectionId);
-    this.sectionService.verifyAccountOwnership(accountId, section.accountId);
-    return this.sectionService.updateItem(itemId, data);
+    return this.sectionService.updateItem(accountId, itemId, data);
   }
 
   @Delete('items/:itemId')
@@ -84,10 +76,7 @@ export class SectionController {
     @Req() req,
   ): Promise<{ message: string }> {
     const accountId = req.user.accountId;
-    const item = await this.sectionService.getItemById(itemId);
-    const section = await this.sectionService.getSectionById(item.sectionId);
-    this.sectionService.verifyAccountOwnership(accountId, section.accountId);
-    await this.sectionService.deleteItem(itemId);
+    await this.sectionService.deleteItem(accountId, itemId);
     return { message: 'Item deleted' };
   }
 }
