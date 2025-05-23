@@ -9,9 +9,29 @@ import {
 
 type SectionGridProps = {
   sections: Section[];
+  draggable?: boolean;
 };
 
-const SectionGrid: React.FC<SectionGridProps> = ({ sections }) => {
+const SectionGrid: React.FC<SectionGridProps> = ({
+  sections,
+  draggable = false,
+}) => {
+  if (!draggable) {
+    return (
+      <Box sx={{ p: 2 }}>
+        {sections.map((section) => (
+          <SectionBlock
+            key={section.id}
+            id={section.id}
+            title={section.title}
+            items={section.items}
+            draggable={false}
+          />
+        ))}
+      </Box>
+    );
+  }
+
   return (
     <SortableContext
       items={sections.map((s) => s.id)}
@@ -24,6 +44,7 @@ const SectionGrid: React.FC<SectionGridProps> = ({ sections }) => {
             id={section.id}
             title={section.title}
             items={section.items}
+            draggable={true}
           />
         ))}
       </Box>

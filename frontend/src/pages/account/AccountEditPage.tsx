@@ -43,7 +43,7 @@ const AccountEditPage: React.FC = () => {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SectionGrid sections={sections} />
+        <SectionGrid sections={sections} draggable={true} />
       </DndContext>
       <Fab
         color="primary"

@@ -9,18 +9,38 @@ type SectionBlockProps = {
   id: number;
   title: string;
   items: Item[];
+  draggable?: boolean;
 };
 
-const SectionBlock: React.FC<SectionBlockProps> = ({ id, title, items }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+const SectionBlock: React.FC<SectionBlockProps> = ({
+  id,
+  title,
+  items,
+  draggable = false,
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = draggable
+    ? useSortable({ id })
+    : {
+        attributes: {},
+        listeners: {},
+        setNodeRef: () => null,
+        transform: null,
+        transition: null,
+      };
 
   const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
+    transform: transform ? CSS.Transform.toString(transform) : undefined,
+    transition: transition ?? undefined,
   };
+
   return (
-    <Box ref={setNodeRef} style={style} {...attributes} {...listeners} mb={4}>
+    <Box
+      ref={draggable ? setNodeRef : undefined}
+      style={style}
+      {...attributes}
+      {...listeners}
+      mb={4}
+    >
       <Typography variant="h6" gutterBottom>
         {title}
       </Typography>
