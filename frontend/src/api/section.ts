@@ -53,7 +53,7 @@ export const createItem = async (
   sectionId: string
 ): Promise<Item> => {
   try {
-    const res = await api.post<Item>("/sections/item", {
+    const res = await api.post<Item>("/sections/items", {
       label,
       priceInCent,
       sectionId,
