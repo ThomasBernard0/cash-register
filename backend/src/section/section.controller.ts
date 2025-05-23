@@ -21,7 +21,7 @@ export class SectionController {
 
   @Get()
   async getAllSections(@Req() req) {
-    const accountId: number = req.user.accountId;
+    const accountId: number = req.user.sub;
     return this.sectionService.getAllSectionsWithItems(accountId);
   }
 
@@ -30,7 +30,7 @@ export class SectionController {
     @Body() data: CreateSectionDto,
     @Req() req,
   ): Promise<Section> {
-    const accountId: number = req.user.accountId;
+    const accountId: number = req.user.sub;
     return this.sectionService.createSection(data, accountId);
   }
 
@@ -40,7 +40,7 @@ export class SectionController {
     @Body() data: UpdateSectionDto,
     @Req() req,
   ): Promise<Section> {
-    const accountId: number = req.user.accountId;
+    const accountId: number = req.user.sub;
     return this.sectionService.updateSection(accountId, id, data);
   }
 
@@ -49,14 +49,14 @@ export class SectionController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Req() req,
   ): Promise<{ message: string }> {
-    const accountId = req.user.accountId;
+    const accountId = req.user.sub;
     await this.sectionService.deleteSection(accountId, id);
     return { message: 'Section deleted' };
   }
 
   @Post('/items')
   async createItem(@Body() data: CreateItemDto, @Req() req): Promise<Item> {
-    const accountId = req.user.accountId;
+    const accountId = req.user.sub;
     return this.sectionService.addItemToSection(accountId, data);
   }
 
@@ -66,7 +66,7 @@ export class SectionController {
     @Body() data: UpdateItemDto,
     @Req() req,
   ): Promise<Item> {
-    const accountId = req.user.accountId;
+    const accountId = req.user.sub;
     return this.sectionService.updateItem(accountId, itemId, data);
   }
 
@@ -75,7 +75,7 @@ export class SectionController {
     @Param('itemId', new ParseUUIDPipe()) itemId: string,
     @Req() req,
   ): Promise<{ message: string }> {
-    const accountId = req.user.accountId;
+    const accountId = req.user.sub;
     await this.sectionService.deleteItem(accountId, itemId);
     return { message: 'Item deleted' };
   }
