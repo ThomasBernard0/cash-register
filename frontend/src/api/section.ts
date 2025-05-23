@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import api from "./api";
 import type { Item, Section } from "../types/section";
+import { debounce } from "@mui/material";
 
 export const useSections = () => {
   const [sections, setSections] = useState<Section[]>([]);
@@ -23,11 +24,35 @@ export const useSections = () => {
     fetchSections();
   }, []);
 
+  const debouncedSaveOrder = useRef(
+    debounce(async (orderedSections: Section[]) => {
+      try {
+        await api.patch("/sections/reorder", {
+          order: orderedSections.map((section, index) => ({
+            id: section.id,
+            order: index,
+          })),
+        });
+      } catch (err) {
+        console.error("Failed to save section order", err);
+      }
+    }, 800)
+  ).current;
+
+  const reorderSections = useCallback(
+    (newOrder: Section[]) => {
+      setSections(newOrder);
+      debouncedSaveOrder(newOrder);
+    },
+    [debouncedSaveOrder]
+  );
+
   return {
     sections,
     loading,
     error,
     refetch: fetchSections,
+    reorderSections,
   };
 };
 

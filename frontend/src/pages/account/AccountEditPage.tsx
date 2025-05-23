@@ -4,10 +4,30 @@ import { useSections } from "../../api/section";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AddSectionElementModal from "../../components/account/AddSectionElementModal";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 
-const AccountHubPage: React.FC = () => {
-  const { sections, loading, error, refetch } = useSections();
+const AccountEditPage: React.FC = () => {
+  const { sections, loading, error, refetch, reorderSections } = useSections();
   const [isAddElementModalOpen, setIsAddElementModalOpen] = useState(false);
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = sections.findIndex((s) => s.id === active.id);
+    const newIndex = sections.findIndex((s) => s.id === over.id);
+    const newOrder = arrayMove(sections, oldIndex, newIndex);
+
+    reorderSections(newOrder);
+  };
 
   if (loading) {
     return <div>Loading sections...</div>;
@@ -18,8 +38,13 @@ const AccountHubPage: React.FC = () => {
   }
   return (
     <>
-      EDIT
-      <SectionGrid sections={sections} />
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SectionGrid sections={sections} />
+      </DndContext>
       <Fab
         color="primary"
         aria-label="add"
@@ -39,4 +64,4 @@ const AccountHubPage: React.FC = () => {
   );
 };
 
-export default AccountHubPage;
+export default AccountEditPage;
