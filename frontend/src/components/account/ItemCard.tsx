@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 
 type ItemCardProps = {
-  id: number;
+  id: string;
   label: string;
 };
 

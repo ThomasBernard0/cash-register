@@ -1,5 +1,5 @@
 export type Section = {
-  id: number;
+  id: string;
   title: string;
   color: string;
   order: number;
@@ -7,7 +7,7 @@ export type Section = {
 };
 
 export type Item = {
-  id: number;
+  id: string;
   label: string;
   priceInCent: number;
   order: number;
