@@ -13,6 +13,13 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SectionService } from './section.service';
 import { Section, Item } from '@prisma/client';
+import {
+  CreateItemDto,
+  CreateSectionDto,
+  UpdateItemDto,
+  UpdateSectionDto,
+  UpdateSectionOrderDto,
+} from './section.dto';
 
 @Controller('api/sections')
 @UseGuards(JwtAuthGuard)
@@ -32,6 +39,12 @@ export class SectionController {
   ): Promise<Section> {
     const accountId: number = req.user.sub;
     return this.sectionService.createSection(data, accountId);
+  }
+
+  @Patch('reorder')
+  updateOrder(@Body() dto: UpdateSectionOrderDto, @Req() req) {
+    const accountId = req.user.sub;
+    return this.sectionService.reorderSections(accountId, dto.order);
   }
 
   @Patch(':id')

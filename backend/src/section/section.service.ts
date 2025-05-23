@@ -6,6 +6,13 @@ import {
 } from '@nestjs/common';
 import { Item, Section } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import {
+  CreateItemDto,
+  CreateSectionDto,
+  SectionOrderEntry,
+  UpdateItemDto,
+  UpdateSectionDto,
+} from './section.dto';
 
 @Injectable()
 export class SectionService {
@@ -85,6 +92,30 @@ export class SectionService {
       return this.prisma.section.delete({ where: { id } });
     } catch {
       throw new BadRequestException('Failed to delete section');
+    }
+  }
+
+  async reorderSections(accountId: number, ordered: SectionOrderEntry[]) {
+    try {
+      const verificationPromises = ordered.map(async (entry) => {
+        const section = await this.getSectionById(entry.id);
+        if (!section)
+          throw new NotFoundException(`Section ${entry.id} not found`);
+        this.verifyAccountOwnership(accountId, section.accountId);
+      });
+      await Promise.all(verificationPromises);
+
+      const updatePromises = ordered.map((entry) =>
+        this.prisma.section.update({
+          where: { id: entry.id },
+          data: { order: entry.order },
+        }),
+      );
+      await Promise.all(updatePromises);
+
+      return { success: true };
+    } catch (error) {
+      throw new BadRequestException('Failed to reorder sections');
     }
   }
 
