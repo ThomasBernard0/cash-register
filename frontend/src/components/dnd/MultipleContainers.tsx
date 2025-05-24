@@ -34,7 +34,6 @@ import Item from "./Item";
 import DraggableSection from "./DraggableSection";
 import Section from "./Section";
 import DraggableItem from "./DraggableItem";
-import { listItemSecondaryActionClasses } from "@mui/material";
 
 const TESTVALUE = {
   A: createRange(3, "A"),
@@ -55,6 +54,8 @@ const dropAnimation: DropAnimation = {
     },
   }),
 };
+
+type Items = Record<UniqueIdentifier, UniqueIdentifier[]>;
 
 const renderContainerDragOverlay = (
   containerId: UniqueIdentifier,
@@ -78,8 +79,6 @@ const renderContainerDragOverlay = (
 const renderSortableItemDragOverlay = (id: UniqueIdentifier) => {
   return <Item value={id} dragOverlay />;
 };
-
-type Items = Record<UniqueIdentifier, UniqueIdentifier[]>;
 
 export function MultipleContainers() {
   const [items, setItems] = useState<Items>(TESTVALUE);
@@ -302,6 +301,15 @@ export function MultipleContainers() {
                     />
                   );
                 })}
+                {
+                  <button
+                    onClick={() => {
+                      return;
+                    }}
+                  >
+                    +
+                  </button>
+                }
               </SortableContext>
             </DraggableSection>
           ))}

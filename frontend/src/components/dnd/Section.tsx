@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { Handle } from "./Handle";
-import { Remove } from "./Remove";
+import Remove from "./Remove";
 
 export interface SectionProps {
   children: React.ReactNode;
@@ -15,13 +15,9 @@ export interface SectionProps {
 }
 
 const Section = forwardRef<HTMLDivElement, SectionProps>(
-  (
-    { children, handleProps, label, onRemove, placeholder, style, ...props },
-    ref
-  ) => {
+  ({ children, handleProps, label, onRemove, style }, ref) => {
     return (
       <div
-        {...props}
         ref={ref}
         style={{ ...style, height: "200px", border: "solid 2px black" }}
       >
