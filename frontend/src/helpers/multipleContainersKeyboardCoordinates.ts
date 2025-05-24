@@ -11,7 +11,7 @@ const directions: string[] = [
   KeyboardCode.Left,
 ];
 
-export const coordinateGetter: KeyboardCoordinateGetter = (
+export const multipleContainersCoordinateGetter: KeyboardCoordinateGetter = (
   event,
   { context: { active, droppableRects, droppableContainers, collisionRect } }
 ) => {
@@ -86,13 +86,6 @@ export const coordinateGetter: KeyboardCoordinateGetter = (
       const newRect = newDroppable?.rect.current;
 
       if (newNode && newRect) {
-        if (newDroppable.id === "placeholder") {
-          return {
-            x: newRect.left + (newRect.width - collisionRect.width) / 2,
-            y: newRect.top + (newRect.height - collisionRect.height) / 2,
-          };
-        }
-
         if (newDroppable.data.current?.type === "container") {
           return {
             x: newRect.left + 20,

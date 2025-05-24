@@ -24,7 +24,6 @@ export interface Props {
     dragging: boolean;
     sorting: boolean;
     index: number | undefined;
-    fadeIn: boolean;
     listeners: DraggableSyntheticListeners;
     ref: React.Ref<HTMLElement>;
     transform: Props["transform"];
@@ -33,7 +32,7 @@ export interface Props {
   }): React.ReactElement;
 }
 
-export const Item = React.memo(
+const Item = React.memo(
   React.forwardRef<HTMLLIElement, Props>(
     (
       {
@@ -73,7 +72,6 @@ export const Item = React.memo(
           dragging: Boolean(dragging),
           sorting: Boolean(sorting),
           index,
-          fadeIn: Boolean(fadeIn),
           listeners,
           ref,
           transform,
@@ -92,7 +90,7 @@ export const Item = React.memo(
                 })`
               : undefined,
             transition: transition ?? undefined,
-            opacity: dragOverlay ? 0.5 : 1,
+            opacity: dragOverlay ? 1 : dragging ? 0.5 : 1,
             zIndex: dragOverlay ? 999 : undefined,
             listStyle: "none",
             height,
@@ -113,3 +111,5 @@ export const Item = React.memo(
     }
   )
 );
+
+export default Item;
