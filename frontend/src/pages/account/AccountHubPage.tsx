@@ -1,6 +1,6 @@
 import React from "react";
 import { useSections } from "../../api/section";
-import { MultipleContainers } from "../../components/dnd/MultipleContainers";
+import { MultipleSections } from "../../components/dnd/MultipleContainers";
 
 const AccountHubPage: React.FC = () => {
   const { sections, loading, error } = useSections();
@@ -13,7 +13,7 @@ const AccountHubPage: React.FC = () => {
     return <div style={{ color: "red" }}>{error}</div>;
   }
 
-  return <MultipleContainers />;
+  return <MultipleSections />;
 };
 
 export default AccountHubPage;

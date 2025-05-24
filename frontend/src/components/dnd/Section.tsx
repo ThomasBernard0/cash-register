@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
-import { Handle } from "./Handle";
-import Remove from "./Remove";
+import Handle from "../account/edit/Handle";
+import Remove from "../account/edit/Remove";
 
 export interface SectionProps {
   children: React.ReactNode;

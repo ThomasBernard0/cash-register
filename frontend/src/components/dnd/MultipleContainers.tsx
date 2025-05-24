@@ -45,42 +45,11 @@ export function createRange(length: number, el: string) {
   return [...new Array(length)].map((_, index) => el + index);
 }
 
-const dropAnimation: DropAnimation = {
-  sideEffects: defaultDropAnimationSideEffects({
-    styles: {
-      active: {
-        opacity: "0.5",
-      },
-    },
-  }),
-};
+console.log(TESTVALUE);
 
 type Items = Record<UniqueIdentifier, UniqueIdentifier[]>;
 
-const renderContainerDragOverlay = (
-  containerId: UniqueIdentifier,
-  items: Items
-) => {
-  return (
-    <Section
-      label={`Column ${containerId}`}
-      style={{
-        height: "100%",
-      }}
-      shadow
-      unstyled={false}
-    >
-      {items[containerId].map((item) => (
-        <Item key={item} value={item} />
-      ))}
-    </Section>
-  );
-};
-const renderSortableItemDragOverlay = (id: UniqueIdentifier) => {
-  return <Item value={id} dragOverlay />;
-};
-
-export function MultipleContainers() {
+export function MultipleSections() {
   const [items, setItems] = useState<Items>(TESTVALUE);
   const [containers, setContainers] = useState(
     Object.keys(items) as UniqueIdentifier[]
@@ -247,6 +216,57 @@ export function MultipleContainers() {
     setActiveId(null);
   };
 
+  const renderContainerDragOverlay = (
+    containerId: UniqueIdentifier,
+    items: Items
+  ) => {
+    return (
+      <Section
+        label={`Column ${containerId}`}
+        style={{
+          height: "100%",
+        }}
+        shadow
+        unstyled={false}
+      >
+        {items[containerId].map((item) => (
+          <Item key={item} value={item} />
+        ))}
+      </Section>
+    );
+  };
+  const renderSortableItemDragOverlay = (id: UniqueIdentifier) => {
+    return <Item value={id} dragOverlay />;
+  };
+
+  const dropAnimation: DropAnimation = {
+    sideEffects: defaultDropAnimationSideEffects({
+      styles: {
+        active: {
+          opacity: "0.5",
+        },
+      },
+    }),
+  };
+
+  function handleRemove(containerID: UniqueIdentifier) {
+    setContainers((containers) =>
+      containers.filter((id) => id !== containerID)
+    );
+  }
+
+  function handleAddColumn() {
+    const newContainerId = "A";
+
+    unstable_batchedUpdates(() => {
+      setContainers((containers) => [...containers, newContainerId]);
+      setItems((items) => ({
+        ...items,
+        [newContainerId]: [],
+      }));
+    });
+  }
+
   useEffect(() => {
     requestAnimationFrame(() => {
       recentlyMovedToNewContainer.current = false;
@@ -328,29 +348,4 @@ export function MultipleContainers() {
       )}
     </DndContext>
   );
-
-  function handleRemove(containerID: UniqueIdentifier) {
-    setContainers((containers) =>
-      containers.filter((id) => id !== containerID)
-    );
-  }
-
-  function handleAddColumn() {
-    const newContainerId = getNextContainerId();
-
-    unstable_batchedUpdates(() => {
-      setContainers((containers) => [...containers, newContainerId]);
-      setItems((items) => ({
-        ...items,
-        [newContainerId]: [],
-      }));
-    });
-  }
-
-  function getNextContainerId() {
-    const containerIds = Object.keys(items);
-    const lastContainerId = containerIds[containerIds.length - 1];
-
-    return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
-  }
 }
