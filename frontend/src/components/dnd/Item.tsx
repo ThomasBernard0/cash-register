@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
 
-import { Handle } from "./Handle";
 import { Remove } from "./Remove";
 
 export interface Props {
@@ -10,8 +9,6 @@ export interface Props {
   color?: string;
   disabled?: boolean;
   dragging?: boolean;
-  handle?: boolean;
-  handleProps?: any;
   height?: number;
   index?: number;
   fadeIn?: boolean;
@@ -20,7 +17,6 @@ export interface Props {
   sorting?: boolean;
   style?: React.CSSProperties;
   transition?: string | null;
-  wrapperStyle?: React.CSSProperties;
   value: React.ReactNode;
   onRemove?(): void;
   renderItem?(args: {
@@ -47,8 +43,6 @@ export const Item = React.memo(
         dragging,
         disabled,
         fadeIn,
-        handle,
-        handleProps,
         height,
         index,
         listeners,
@@ -59,7 +53,6 @@ export const Item = React.memo(
         transition,
         transform,
         value,
-        wrapperStyle,
         ...props
       },
       ref
@@ -94,10 +87,7 @@ export const Item = React.memo(
         <li
           style={
             {
-              ...wrapperStyle,
-              transition: [transition, wrapperStyle?.transition]
-                .filter(Boolean)
-                .join(", "),
+              transition: [transition].filter(Boolean).join(", "),
               "--translate-x": transform
                 ? `${Math.round(transform.x)}px`
                 : undefined,
@@ -119,15 +109,12 @@ export const Item = React.memo(
           <div
             style={style}
             data-cypress="draggable-item"
-            {...(!handle ? listeners : undefined)}
+            {...listeners}
             {...props}
-            tabIndex={!handle ? 0 : undefined}
+            tabIndex={0}
           >
             {value}
-            <span>
-              {onRemove ? <Remove onClick={onRemove} /> : null}
-              {handle ? <Handle {...handleProps} {...listeners} /> : null}
-            </span>
+            <span>{onRemove ? <Remove onClick={onRemove} /> : null}</span>
           </div>
         </li>
       );
