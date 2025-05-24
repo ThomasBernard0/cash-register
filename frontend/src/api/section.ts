@@ -39,6 +39,10 @@ export const useSections = () => {
     }, 800)
   ).current;
 
+  const setLocalOrder = useCallback((newOrder: Section[]) => {
+    setSections(newOrder);
+  }, []);
+
   const reorderSections = useCallback(
     (newOrder: Section[]) => {
       setSections(newOrder);
@@ -53,6 +57,7 @@ export const useSections = () => {
     error,
     refetch: fetchSections,
     reorderSections,
+    setLocalOrder,
   };
 };
 

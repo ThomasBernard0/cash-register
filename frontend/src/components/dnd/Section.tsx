@@ -19,12 +19,12 @@ const Section = forwardRef<HTMLDivElement, SectionProps>(
     return (
       <div
         ref={ref}
-        style={{ ...style, height: "200px", border: "solid 2px black" }}
+        style={{ ...style, height: "300px", border: "solid 2px black" }}
       >
         {label && (
           <div style={{ display: "flex" }}>
-            {label}
-            <div>
+            <div style={{ flexGrow: 1 }}> {label}</div>
+            <div style={{ display: "flex" }}>
               {onRemove && <Remove onClick={onRemove} />}
               <Handle {...handleProps} />
             </div>

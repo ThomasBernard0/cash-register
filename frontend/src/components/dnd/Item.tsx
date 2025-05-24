@@ -97,7 +97,11 @@ const Item = React.memo(
           }}
         >
           <div
-            style={{ width: "200px", border: "solid 1px black" }}
+            style={{
+              width: "200px",
+              height: "100px",
+              border: "solid 1px black",
+            }}
             data-cypress="draggable-item"
             {...listeners}
             {...props}
