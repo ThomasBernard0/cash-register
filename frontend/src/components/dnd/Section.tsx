@@ -20,7 +20,11 @@ const Section = forwardRef<HTMLDivElement, SectionProps>(
     ref
   ) => {
     return (
-      <div {...props} ref={ref}>
+      <div
+        {...props}
+        ref={ref}
+        style={{ ...style, height: "200px", border: "solid 2px black" }}
+      >
         {label && (
           <div style={{ display: "flex" }}>
             {label}

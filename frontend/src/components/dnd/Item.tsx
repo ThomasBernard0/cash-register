@@ -27,7 +27,6 @@ export interface Props {
     fadeIn: boolean;
     listeners: DraggableSyntheticListeners;
     ref: React.Ref<HTMLElement>;
-    style: React.CSSProperties | undefined;
     transform: Props["transform"];
     transition: Props["transition"];
     value: Props["value"];
@@ -49,7 +48,6 @@ export const Item = React.memo(
         onRemove,
         renderItem,
         sorting,
-        style,
         transition,
         transform,
         value,
@@ -78,36 +76,30 @@ export const Item = React.memo(
           fadeIn: Boolean(fadeIn),
           listeners,
           ref,
-          style,
           transform,
           transition,
           value,
         })
       ) : (
         <li
-          style={
-            {
-              transition: [transition].filter(Boolean).join(", "),
-              "--translate-x": transform
-                ? `${Math.round(transform.x)}px`
-                : undefined,
-              "--translate-y": transform
-                ? `${Math.round(transform.y)}px`
-                : undefined,
-              "--scale-x": transform?.scaleX
-                ? `${transform.scaleX}`
-                : undefined,
-              "--scale-y": transform?.scaleY
-                ? `${transform.scaleY}`
-                : undefined,
-              "--index": index,
-              "--color": color,
-            } as React.CSSProperties
-          }
           ref={ref}
+          style={{
+            transform: transform
+              ? `translate3d(${Math.round(transform.x)}px, ${Math.round(
+                  transform.y
+                )}px, 0) scale(${transform.scaleX ?? 1}, ${
+                  transform.scaleY ?? 1
+                })`
+              : undefined,
+            transition: transition ?? undefined,
+            opacity: dragOverlay ? 0.5 : 1,
+            zIndex: dragOverlay ? 999 : undefined,
+            listStyle: "none",
+            height,
+          }}
         >
           <div
-            style={style}
+            style={{ width: "200px", border: "solid 1px black" }}
             data-cypress="draggable-item"
             {...listeners}
             {...props}

@@ -26,8 +26,8 @@ import {
   useSortable,
   arrayMove,
   verticalListSortingStrategy,
+  rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { SortingStrategy } from "@dnd-kit/sortable";
 
 import { coordinateGetter as multipleContainersCoordinateGetter } from "./multipleContainersKeyboardCoordinates";
 
@@ -37,8 +37,8 @@ import Section from "./Section";
 
 const TESTVALUE = {
   A: createRange(3, "A"),
-  B: createRange(3, "B"),
-  C: createRange(3, "C"),
+  B: createRange(5, "B"),
+  C: createRange(9, "C"),
   D: createRange(3, "D"),
 };
 export function createRange(length: number, el: string) {
@@ -57,11 +57,7 @@ const dropAnimation: DropAnimation = {
 
 type Items = Record<UniqueIdentifier, UniqueIdentifier[]>;
 
-interface Props {
-  items?: Items;
-}
-
-export function MultipleContainers({}: Props) {
+export function MultipleContainers() {
   const [items, setItems] = useState<Items>(TESTVALUE);
   const [containers, setContainers] = useState(
     Object.keys(items) as UniqueIdentifier[]
@@ -71,7 +67,6 @@ export function MultipleContainers({}: Props) {
   const recentlyMovedToNewContainer = useRef(false);
   const coordinateGetter: KeyboardCoordinateGetter =
     multipleContainersCoordinateGetter;
-  const strategy: SortingStrategy = verticalListSortingStrategy;
   const isSortingContainer =
     activeId != null ? containers.includes(activeId) : false;
 
@@ -320,7 +315,10 @@ export function MultipleContainers({}: Props) {
               items={items[containerId]}
               onRemove={() => handleRemove(containerId)}
             >
-              <SortableContext items={items[containerId]} strategy={strategy}>
+              <SortableContext
+                items={items[containerId]}
+                strategy={rectSortingStrategy}
+              >
                 {items[containerId].map((value, index) => {
                   return (
                     <SortableItem
@@ -353,7 +351,7 @@ export function MultipleContainers({}: Props) {
   );
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
-    return <Item value={id} color={getColor(id)} dragOverlay />;
+    return <Item value={id} dragOverlay />;
   }
 
   function renderContainerDragOverlay(containerId: UniqueIdentifier) {
@@ -367,7 +365,7 @@ export function MultipleContainers({}: Props) {
         unstyled={false}
       >
         {items[containerId].map((item) => (
-          <Item key={item} value={item} color={getColor(item)} />
+          <Item key={item} value={item} />
         ))}
       </Section>
     );
@@ -399,21 +397,6 @@ export function MultipleContainers({}: Props) {
   }
 }
 
-function getColor(id: UniqueIdentifier) {
-  switch (String(id)[0]) {
-    case "A":
-      return "#7193f1";
-    case "B":
-      return "#ffda6c";
-    case "C":
-      return "#00bcd4";
-    case "D":
-      return "#ef769f";
-  }
-
-  return undefined;
-}
-
 interface SortableItemProps {
   containerId: UniqueIdentifier;
   id: UniqueIdentifier;
@@ -443,7 +426,6 @@ function SortableItem({ disabled, id, index }: SortableItemProps) {
       dragging={isDragging}
       sorting={isSorting}
       index={index}
-      color={getColor(id)}
       transition={transition}
       transform={transform}
       fadeIn={mountedWhileDragging}
