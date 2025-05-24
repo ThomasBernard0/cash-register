@@ -50,25 +50,23 @@ console.log(TESTVALUE);
 type Items = Record<UniqueIdentifier, UniqueIdentifier[]>;
 
 export function MultipleSections() {
-  const [items, setItems] = useState<Items>(TESTVALUE);
-  const [containers, setContainers] = useState(
-    Object.keys(items) as UniqueIdentifier[]
+  const [sections, setSections] = useState<Items>(TESTVALUE);
+  const [sectionsId, setSectionsId] = useState(
+    Object.keys(sections) as UniqueIdentifier[]
   );
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
-  const recentlyMovedToNewContainer = useRef(false);
+  const recentlyMovedToNewSection = useRef(false);
   const coordinateGetter: KeyboardCoordinateGetter =
     multipleContainersCoordinateGetter;
-  const isSortingContainer =
-    activeId != null ? containers.includes(activeId) : false;
 
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
-      if (activeId && activeId in items) {
+      if (activeId && activeId in sections) {
         return closestCenter({
           ...args,
           droppableContainers: args.droppableContainers.filter(
-            (container) => container.id in items
+            (container) => container.id in sections
           ),
         });
       }
@@ -79,8 +77,8 @@ export function MultipleSections() {
           : rectIntersection(args);
       let overId = getFirstCollision(intersections, "id");
       if (overId != null) {
-        if (overId in items) {
-          const containerItems = items[overId];
+        if (overId in sections) {
+          const containerItems = sections[overId];
           if (containerItems.length > 0) {
             overId = closestCenter({
               ...args,
@@ -95,12 +93,12 @@ export function MultipleSections() {
         lastOverId.current = overId;
         return [{ id: overId }];
       }
-      if (recentlyMovedToNewContainer.current) {
+      if (recentlyMovedToNewSection.current) {
         lastOverId.current = activeId;
       }
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeId, items]
+    [activeId, sections]
   );
 
   const [clonedItems, setClonedItems] = useState<Items | null>(null);
@@ -112,16 +110,16 @@ export function MultipleSections() {
     })
   );
 
-  const findContainer = (id: UniqueIdentifier) => {
-    if (id in items) {
+  const findSection = (id: UniqueIdentifier) => {
+    if (id in sections) {
       return id;
     }
-    return Object.keys(items).find((key) => items[key].includes(id));
+    return Object.keys(sections).find((key) => sections[key].includes(id));
   };
 
   const onDragCancel = () => {
     if (clonedItems) {
-      setItems(clonedItems);
+      setSections(clonedItems);
     }
     setActiveId(null);
     setClonedItems(null);
@@ -129,27 +127,27 @@ export function MultipleSections() {
 
   const onDragStart = ({ active }: any) => {
     setActiveId(active.id);
-    setClonedItems(items);
+    setClonedItems(sections);
   };
 
   const onDragOver = ({ active, over }: any) => {
     const overId = over?.id;
-    if (overId == null || active.id in items) {
+    if (overId == null || active.id in sections) {
       return;
     }
-    const overContainer = findContainer(overId);
-    const activeContainer = findContainer(active.id);
-    if (!overContainer || !activeContainer) {
+    const overSection = findSection(overId);
+    const activeSection = findSection(active.id);
+    if (!overSection || !activeSection) {
       return;
     }
-    if (activeContainer !== overContainer) {
-      setItems((items) => {
-        const activeItems = items[activeContainer];
-        const overItems = items[overContainer];
+    if (activeSection !== overSection) {
+      setSections((sections) => {
+        const activeItems = sections[activeSection];
+        const overItems = sections[overSection];
         const overIndex = overItems.indexOf(overId);
         const activeIndex = activeItems.indexOf(active.id);
         let newIndex: number;
-        if (overId in items) {
+        if (overId in sections) {
           newIndex = overItems.length + 1;
         } else {
           const isBelowOverItem =
@@ -161,18 +159,18 @@ export function MultipleSections() {
           newIndex =
             overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
         }
-        recentlyMovedToNewContainer.current = true;
+        recentlyMovedToNewSection.current = true;
         return {
-          ...items,
-          [activeContainer]: items[activeContainer].filter(
+          ...sections,
+          [activeSection]: sections[activeSection].filter(
             (item) => item !== active.id
           ),
-          [overContainer]: [
-            ...items[overContainer].slice(0, newIndex),
-            items[activeContainer][activeIndex],
-            ...items[overContainer].slice(
+          [overSection]: [
+            ...sections[overSection].slice(0, newIndex),
+            sections[activeSection][activeIndex],
+            ...sections[overSection].slice(
               newIndex,
-              items[overContainer].length
+              sections[overSection].length
             ),
           ],
         };
@@ -181,15 +179,15 @@ export function MultipleSections() {
   };
 
   const onDragEnd = ({ active, over }: any) => {
-    if (active.id in items && over?.id) {
-      setContainers((containers) => {
-        const activeIndex = containers.indexOf(active.id);
-        const overIndex = containers.indexOf(over.id);
-        return arrayMove(containers, activeIndex, overIndex);
+    if (active.id in sections && over?.id) {
+      setSectionsId((sectionsId) => {
+        const activeIndex = sectionsId.indexOf(active.id);
+        const overIndex = sectionsId.indexOf(over.id);
+        return arrayMove(sectionsId, activeIndex, overIndex);
       });
     }
-    const activeContainer = findContainer(active.id);
-    if (!activeContainer) {
+    const activeSection = findSection(active.id);
+    if (!activeSection) {
       setActiveId(null);
       return;
     }
@@ -198,15 +196,15 @@ export function MultipleSections() {
       setActiveId(null);
       return;
     }
-    const overContainer = findContainer(overId);
-    if (overContainer) {
-      const activeIndex = items[activeContainer].indexOf(active.id);
-      const overIndex = items[overContainer].indexOf(overId);
+    const overSection = findSection(overId);
+    if (overSection) {
+      const activeIndex = sections[activeSection].indexOf(active.id);
+      const overIndex = sections[overSection].indexOf(overId);
       if (activeIndex !== overIndex) {
-        setItems((items) => ({
-          ...items,
-          [overContainer]: arrayMove(
-            items[overContainer],
+        setSections((sections) => ({
+          ...sections,
+          [overSection]: arrayMove(
+            sections[overSection],
             activeIndex,
             overIndex
           ),
@@ -216,20 +214,20 @@ export function MultipleSections() {
     setActiveId(null);
   };
 
-  const renderContainerDragOverlay = (
-    containerId: UniqueIdentifier,
-    items: Items
+  const renderSectionDragOverlay = (
+    sectionId: UniqueIdentifier,
+    sections: Items
   ) => {
     return (
       <Section
-        label={`Column ${containerId}`}
+        label={`Column ${sectionId}`}
         style={{
           height: "100%",
         }}
         shadow
         unstyled={false}
       >
-        {items[containerId].map((item) => (
+        {sections[sectionId].map((item) => (
           <Item key={item} value={item} />
         ))}
       </Section>
@@ -249,29 +247,27 @@ export function MultipleSections() {
     }),
   };
 
-  function handleRemove(containerID: UniqueIdentifier) {
-    setContainers((containers) =>
-      containers.filter((id) => id !== containerID)
-    );
+  function handleRemove(sectionId: UniqueIdentifier) {
+    setSectionsId((sectionsId) => sectionsId.filter((id) => id !== sectionId));
   }
 
   function handleAddColumn() {
-    const newContainerId = "A";
+    const newSectionId = "A";
 
     unstable_batchedUpdates(() => {
-      setContainers((containers) => [...containers, newContainerId]);
-      setItems((items) => ({
-        ...items,
-        [newContainerId]: [],
+      setSectionsId((sectionsId) => [...sectionsId, newSectionId]);
+      setSections((sections) => ({
+        ...sections,
+        [newSectionId]: [],
       }));
     });
   }
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      recentlyMovedToNewContainer.current = false;
+      recentlyMovedToNewSection.current = false;
     });
-  }, [items]);
+  }, [sections]);
 
   return (
     <DndContext
@@ -296,25 +292,27 @@ export function MultipleSections() {
         }}
       >
         <SortableContext
-          items={[...containers]}
+          items={[...sectionsId]}
           strategy={verticalListSortingStrategy}
         >
-          {containers.map((containerId) => (
+          {sectionsId.map((sectionId) => (
             <DraggableSection
-              key={containerId}
-              id={containerId}
-              label={`Column ${containerId}`}
-              items={items[containerId]}
-              onRemove={() => handleRemove(containerId)}
+              key={sectionId}
+              id={sectionId}
+              label={`Column ${sectionId}`}
+              items={sections[sectionId]}
+              onRemove={() => handleRemove(sectionId)}
             >
               <SortableContext
-                items={items[containerId]}
+                items={sections[sectionId]}
                 strategy={rectSortingStrategy}
               >
-                {items[containerId].map((value, index) => {
+                {sections[sectionId].map((value, index) => {
                   return (
                     <DraggableItem
-                      disabled={isSortingContainer}
+                      disabled={
+                        activeId != null ? sectionsId.includes(activeId) : false
+                      }
                       key={value}
                       id={value}
                       index={index}
@@ -339,8 +337,8 @@ export function MultipleSections() {
       {createPortal(
         <DragOverlay dropAnimation={dropAnimation}>
           {activeId
-            ? containers.includes(activeId)
-              ? renderContainerDragOverlay(activeId, items)
+            ? sectionsId.includes(activeId)
+              ? renderSectionDragOverlay(activeId, sections)
               : renderSortableItemDragOverlay(activeId)
             : null}
         </DragOverlay>,
