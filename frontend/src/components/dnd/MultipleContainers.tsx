@@ -27,6 +27,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
   rectSortingStrategy,
+  arrayMove,
 } from "@dnd-kit/sortable";
 
 import { multipleContainersCoordinateGetter } from "../../helpers/multipleContainersKeyboardCoordinates";
@@ -50,17 +51,38 @@ export function MultipleSections() {
   const coordinateGetter: KeyboardCoordinateGetter =
     multipleContainersCoordinateGetter;
 
+  const idInSections = (id: UniqueIdentifier): boolean => {
+    return sections.some((section) => section.id === id);
+  };
+
+  const findElement = (id: UniqueIdentifier) => {
+    if (typeof id === "string" && id.endsWith("-placeholder")) {
+      return id.replace("-placeholder", "");
+    }
+
+    if (sections.some((section) => section.id === id)) {
+      return id;
+    }
+
+    for (const section of sections) {
+      if (section.items.some((item) => item.id === id)) {
+        return section.id;
+      }
+    }
+  };
+
+  const getItemsBySectionId = (id: UniqueIdentifier): any[] => {
+    const items = sections.find((section) => section.id == id)?.items;
+    return items ? items : [];
+  };
+
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
-      if (activeId && sections.some((section) => section.id === activeId)) {
-        return rectIntersection({
+      if (activeId && idInSections(activeId)) {
+        return closestCenter({
           ...args,
-          droppableContainers: args.droppableContainers.filter(
-            (container) =>
-              (container.id !== activeId &&
-                sections.some((section) => section.id === container.id)) ||
-              (typeof container.id === "string" &&
-                container.id.endsWith("-placeholder"))
+          droppableContainers: args.droppableContainers.filter((container) =>
+            idInSections(container.id)
           ),
         });
       }
@@ -69,35 +91,22 @@ export function MultipleSections() {
         pointerIntersections.length > 0
           ? pointerIntersections
           : rectIntersection(args);
-      let overId: UniqueIdentifier | null = getFirstCollision(
-        intersections,
-        "id"
-      );
+      let overId = getFirstCollision(intersections, "id");
       if (overId != null) {
-        if (typeof overId === "string") {
-          if (overId.endsWith("-placeholder")) {
-            const sectionId = overId.replace("-placeholder", "");
-            const section = sections.find((s) => s.id === sectionId);
-            if (section) {
-              lastOverId.current = overId;
-              return [{ id: overId }];
-            }
-          } else if (sections.some((s) => s.id === overId)) {
-            const section = sections.find((s) => s.id === overId);
-            if (section && section.items.length > 0) {
-              const closestItemId = closestCenter({
-                ...args,
-                droppableContainers: args.droppableContainers.filter(
-                  (container) =>
-                    container.id !== overId &&
-                    section.items.some((item) => item.id === container.id)
-                ),
-              })[0]?.id;
-              if (closestItemId) {
-                lastOverId.current = closestItemId;
-                return [{ id: closestItemId }];
-              }
-            }
+        if (idInSections(overId)) {
+          const containerItems = sections.find(
+            (section) => section.id == overId
+          )?.items;
+          if (!containerItems) return [];
+          if (containerItems.length > 0) {
+            overId = closestCenter({
+              ...args,
+              droppableContainers: args.droppableContainers.filter(
+                (container) =>
+                  container.id !== overId &&
+                  containerItems.some((item) => item.id == container.id)
+              ),
+            })[0]?.id;
           }
         }
         lastOverId.current = overId;
@@ -128,126 +137,129 @@ export function MultipleSections() {
   };
 
   const onDragOver = ({ active, over }: DragOverEvent) => {
-    if (!over || active.id === over.id) return;
-    const isPlaceholder = (over.id as string).endsWith("-placeholder");
-    const targetSectionId = isPlaceholder
-      ? (over.id as string).replace("-placeholder", "")
-      : null;
-    const activeSection = sections.find((section) =>
-      section.items.some((item) => item.id === active.id)
-    );
-    const overSection = isPlaceholder
-      ? sections.find((section) => section.id === targetSectionId)
-      : sections.find((section) =>
-          section.items.some((item) => item.id === over.id)
-        );
-    if (!activeSection || !overSection) {
+    const overId = over?.id;
+
+    if (overId == null || idInSections(active.id)) {
       return;
     }
-    const activeItem = activeSection.items.find(
+
+    const overContainer = findElement(overId);
+    const activeContainer = findElement(active.id);
+
+    if (!overContainer || !activeContainer) {
+      return;
+    }
+
+    const activeIndex = getItemsBySectionId(activeContainer).findIndex(
       (item) => item.id === active.id
     );
-    if (!activeItem) return;
-    const overIndex = isPlaceholder
-      ? overSection.items.length
-      : overSection.items.findIndex((item) => item.id === over.id);
-    const insertIndex = overIndex === -1 ? overSection.items.length : overIndex;
-    if (activeSection.id === overSection.id) {
-      const items = [...activeSection.items];
-      const fromIndex = items.findIndex((item) => item.id === active.id);
-      items.splice(fromIndex, 1);
-      let adjustedIndex = insertIndex;
-      if (fromIndex < insertIndex) {
-        adjustedIndex = insertIndex - 1;
-      }
-      items.splice(adjustedIndex, 0, activeItem);
-      const updatedSections = sections.map((section) =>
-        section.id === activeSection.id ? { ...section, items } : section
-      );
-      setLocalOrder(updatedSections);
-    } else {
-      const updatedSections = sections.map((section) => {
-        if (section.id === activeSection.id) {
+
+    let overIndex = getItemsBySectionId(overContainer).findIndex(
+      (item) => item.id === overId
+    );
+    if (overId.toString().endsWith("-placeholder")) {
+      overIndex = getItemsBySectionId(overContainer).length;
+    }
+
+    if (activeContainer !== overContainer) {
+      recentlyMovedToNewSection.current = true;
+
+      const itemToMove = getItemsBySectionId(activeContainer)[activeIndex];
+      if (!itemToMove) return;
+
+      const newSections = sections.map((section) => {
+        if (section.id === activeContainer) {
           return {
             ...section,
             items: section.items.filter((item) => item.id !== active.id),
           };
         }
-        if (section.id === overSection.id) {
+        if (section.id === overContainer) {
+          const newItems = [...section.items];
+          newItems.splice(overIndex, 0, itemToMove);
           return {
             ...section,
-            items: [
-              ...section.items.slice(0, insertIndex),
-              activeItem,
-              ...section.items.slice(insertIndex),
-            ],
+            items: newItems,
           };
         }
         return section;
       });
-      setLocalOrder(updatedSections);
+
+      setLocalOrder(newSections);
+      return;
+    }
+
+    if (activeContainer === overContainer && active.id !== overId) {
+      const itemToMove = getItemsBySectionId(activeContainer)[activeIndex];
+      if (!itemToMove) return;
+
+      const newSections = sections.map((section) => {
+        if (section.id === activeContainer) {
+          return {
+            ...section,
+            items: arrayMove(section.items, activeIndex, overIndex),
+          };
+        }
+        return section;
+      });
+
+      setLocalOrder(newSections);
     }
   };
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) {
+    if (idInSections(active.id) && over?.id) {
+      const newSections = (() => {
+        const activeIndex = sections.findIndex(
+          (section) => section.id === active.id
+        );
+        const overIndex = sections.findIndex(
+          (section) => section.id === over.id
+        );
+        if (activeIndex === -1 || overIndex === -1) return sections;
+
+        return arrayMove(sections, activeIndex, overIndex);
+      })();
+      setLocalOrder(newSections);
+      return;
+    }
+    const activeContainer = findElement(active.id);
+
+    if (!activeContainer) {
       setActiveId(null);
       return;
     }
-    const activeSectionIndex = sections.findIndex(
-      (section) => section.id === active.id
-    );
-    const overSectionIndex = sections.findIndex(
-      (section) => section.id === over.id
-    );
-    if (activeSectionIndex !== -1 && overSectionIndex !== -1) {
-      const newSections = [...sections];
-      const [movedSection] = newSections.splice(activeSectionIndex, 1);
-      newSections.splice(overSectionIndex, 0, movedSection);
-      reorderSections(newSections);
+
+    const overId = over?.id;
+    if (overId == null) {
       setActiveId(null);
       return;
     }
-    const activeSection = sections.find((section) =>
-      section.items.some((item) => item.id === active.id)
-    );
-    const overSection = sections.find((section) =>
-      section.items.some((item) => item.id === over.id)
-    );
-    if (!activeSection || !overSection) {
-      setActiveId(null);
-      return;
-    }
-    const activeItemIndex = activeSection.items.findIndex(
-      (item) => item.id === active.id
-    );
-    const overItemIndex = overSection.items.findIndex(
-      (item) => item.id === over.id
-    );
-    let newSections = [...sections];
-    if (activeSection.id === overSection.id) {
-      const newItems = [...activeSection.items];
-      const [movedItem] = newItems.splice(activeItemIndex, 1);
-      newItems.splice(overItemIndex, 0, movedItem);
-      newSections = newSections.map((section) =>
-        section.id === activeSection.id
-          ? { ...section, items: newItems }
-          : section
+    const overContainer = findElement(overId);
+
+    if (overContainer) {
+      const activeIndex = getItemsBySectionId(activeContainer).findIndex(
+        (item) => item.id == active.id
       );
-    } else {
-      const activeItems = [...activeSection.items];
-      const [movedItem] = activeItems.splice(activeItemIndex, 1);
-      const overItems = [...overSection.items];
-      overItems.splice(overItemIndex, 0, movedItem);
-      newSections = newSections.map((section) => {
-        if (section.id === activeSection.id)
-          return { ...section, items: activeItems };
-        if (section.id === overSection.id)
-          return { ...section, items: overItems };
-        return section;
-      });
+      const overIndex = overId.toString().endsWith("-placeholder")
+        ? getItemsBySectionId(overContainer).length
+        : getItemsBySectionId(overContainer).findIndex(
+            (item) => item.id == overId
+          );
+
+      if (activeIndex !== overIndex) {
+        const newSections = sections.map((section: SectionType) => {
+          if (section.id == overContainer) {
+            return {
+              ...section,
+              items: arrayMove(section.items, activeIndex, overIndex),
+            };
+          }
+          return { ...section };
+        });
+        setLocalOrder(newSections);
+      }
     }
-    reorderSections(newSections);
     setActiveId(null);
   };
 
