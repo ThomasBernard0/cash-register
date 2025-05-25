@@ -4,11 +4,12 @@ import Item from "./Item";
 
 interface DraggableItemProps {
   id: UniqueIdentifier;
+  label: string;
   index: number;
   disabled?: boolean;
 }
 
-const DraggableItem = ({ id, index, disabled }: DraggableItemProps) => {
+const DraggableItem = ({ id, label, index, disabled }: DraggableItemProps) => {
   const {
     setNodeRef,
     listeners,
@@ -22,7 +23,7 @@ const DraggableItem = ({ id, index, disabled }: DraggableItemProps) => {
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
-      value={id}
+      value={label}
       dragging={isDragging}
       sorting={isSorting}
       index={index}

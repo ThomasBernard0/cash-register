@@ -320,7 +320,12 @@ export function MultipleSections() {
                 strategy={rectSortingStrategy}
               >
                 {section.items.map((item, index) => (
-                  <DraggableItem key={item.id} id={item.id} index={index} />
+                  <DraggableItem
+                    key={item.id}
+                    label={item.label}
+                    id={item.id}
+                    index={index}
+                  />
                 ))}
                 <AddItemButton
                   id={`${section.id}-placeholder`}
