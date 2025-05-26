@@ -27,12 +27,14 @@ export const useSections = () => {
   const debouncedSaveOrder = useRef(
     debounce(async (orderedSections: Section[]) => {
       try {
-        await api.patch("/sections/reorder", {
-          order: orderedSections.map((section, index) => ({
-            id: section.id,
-            order: index,
+        const payload = orderedSections.map((section) => ({
+          id: section.id,
+          items: section.items?.map((item) => ({
+            id: item.id,
           })),
-        });
+        }));
+
+        await api.patch("/sections/reorder", payload);
       } catch (err) {
         console.error("Failed to save section order", err);
       }
