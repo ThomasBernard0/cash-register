@@ -3,6 +3,7 @@ import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
 import Box from "@mui/material/Box";
 import Remove from "./Remove";
+import { Typography } from "@mui/material";
 
 type Props = {
   dragOverlay?: boolean;
@@ -41,6 +42,8 @@ const Item = React.memo(
         <Box
           ref={ref}
           sx={{
+            display: "flex",
+            flexDirection: "column",
             width: "100%",
             height: 100,
             border: "1px solid black",
@@ -57,8 +60,20 @@ const Item = React.memo(
           }}
           {...listeners}
         >
-          <Box sx={{ flexGrow: 1 }}>{value}</Box>
-          {onRemove && <Remove onClick={onRemove} />}
+          <Box sx={{ height: "40px", display: "flex" }}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography>{value}</Typography>
+            </Box>
+            <Remove
+              onClick={
+                onRemove
+                  ? onRemove
+                  : () => {
+                      return;
+                    }
+              }
+            />
+          </Box>
         </Box>
       );
     }
