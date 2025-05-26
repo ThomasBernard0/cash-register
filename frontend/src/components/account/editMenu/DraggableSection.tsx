@@ -4,7 +4,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Section from "../../dnd/Section";
 
-interface DraggableSectionProps {
+interface Props {
   id: UniqueIdentifier;
   title: string;
   items: UniqueIdentifier[];
@@ -12,13 +12,7 @@ interface DraggableSectionProps {
   children: React.ReactNode;
 }
 
-const DraggableSection = ({
-  id,
-  title,
-  items,
-  onRemove,
-  children,
-}: DraggableSectionProps) => {
+const DraggableSection = ({ id, title, items, onRemove, children }: Props) => {
   const {
     active,
     attributes,

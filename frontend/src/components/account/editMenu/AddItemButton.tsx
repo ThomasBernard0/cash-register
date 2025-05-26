@@ -1,21 +1,21 @@
 import { useDroppable } from "@dnd-kit/core";
+import { Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 export function AddItemButton({ id, onClick }: any) {
   const { setNodeRef } = useDroppable({ id });
 
   return (
-    <button
+    <Button
       ref={setNodeRef}
       onClick={onClick}
       style={{
-        border: "2px solid transparent",
-        backgroundColor: "transparent",
-        padding: "8px 12px",
-        borderRadius: 4,
         cursor: "pointer",
+        border: "dashed 1px black",
+        height: "100px",
       }}
     >
-      + Add item
-    </button>
+      <AddIcon />
+    </Button>
   );
 }
