@@ -48,8 +48,4 @@ export class UpdateItemDto {
   @IsInt()
   @Min(0)
   priceInCent?: number;
-
-  @IsOptional()
-  @IsString()
-  sectionId?: string;
 }

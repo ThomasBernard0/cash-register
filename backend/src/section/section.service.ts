@@ -185,7 +185,7 @@ export class SectionService {
       const item = await this.getItemById(id);
       if (!item) throw new NotFoundException('Item not found');
 
-      const section = await this.getSectionById(data.sectionId);
+      const section = await this.getSectionById(item.sectionId);
       if (!section) throw new NotFoundException('Section not found');
       this.verifyAccountOwnership(accountId, section.accountId);
 
