@@ -1,11 +1,12 @@
 import React, { forwardRef } from "react";
 import { Box, Paper } from "@mui/material";
 import Handle from "./Handle";
-import Remove from "./Remove";
+import EditAction from "./EditAction";
 
 type Props = {
   title?: string;
-  onRemove?(): void;
+  onEdit?(): void;
+  onDelete?(): void;
   children: React.ReactNode;
   style?: React.CSSProperties;
   hover?: boolean;
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const Section = forwardRef<HTMLDivElement, Props>(
-  ({ title, onRemove, children, handleProps, style }, ref) => {
+  ({ title, onEdit, onDelete, children, handleProps, style }, ref) => {
     return (
       <Paper
         ref={ref}
@@ -36,14 +37,9 @@ const Section = forwardRef<HTMLDivElement, Props>(
           >
             <Box fontWeight="bold">{title}</Box>
             <Box display="flex" alignItems="center" gap={1}>
-              <Remove
-                onClick={
-                  onRemove
-                    ? onRemove
-                    : () => {
-                        return;
-                      }
-                }
+              <EditAction
+                onEdit={onEdit ? onEdit : () => null}
+                onDelete={onDelete ? onDelete : () => null}
               />
               <Handle {...handleProps} />
             </Box>

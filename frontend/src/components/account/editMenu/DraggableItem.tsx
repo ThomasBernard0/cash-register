@@ -6,10 +6,11 @@ type Props = {
   id: UniqueIdentifier;
   label: string;
   disabled?: boolean;
-  onRemove: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 };
 
-const DraggableItem = ({ id, label, disabled, onRemove }: Props) => {
+const DraggableItem = ({ id, label, disabled, onEdit, onDelete }: Props) => {
   const { setNodeRef, listeners, isDragging, transform, transition } =
     useSortable({
       id,
@@ -18,7 +19,8 @@ const DraggableItem = ({ id, label, disabled, onRemove }: Props) => {
     <Item
       ref={disabled ? undefined : setNodeRef}
       label={label}
-      onRemove={onRemove}
+      onEdit={onEdit}
+      onDelete={onDelete}
       dragging={isDragging}
       transition={transition}
       transform={transform}

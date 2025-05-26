@@ -317,7 +317,8 @@ const AccountEditPage: React.FC = () => {
               id={section.id}
               title={section.title}
               items={section.items.map((item) => item.id)}
-              onRemove={() => deleteSection(section.id)}
+              onEdit={() => null}
+              onDelete={() => deleteSection(section.id)}
             >
               <SortableContext
                 items={section.items.map((item) => item.id)}
@@ -328,8 +329,8 @@ const AccountEditPage: React.FC = () => {
                     key={item.id}
                     label={item.label}
                     id={item.id}
-                    onRemove={() => {
-                      console.log("test");
+                    onEdit={() => null}
+                    onDelete={() => {
                       deleteItem(item.id);
                     }}
                   />

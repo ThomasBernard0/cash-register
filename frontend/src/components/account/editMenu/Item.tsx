@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
 import Box from "@mui/material/Box";
-import Remove from "./Remove";
+import EditAction from "./EditAction";
 import { Typography } from "@mui/material";
 
 type Props = {
   label: React.ReactNode;
-  onRemove?(): void;
+  onEdit?(): void;
+  onDelete?(): void;
   dragOverlay?: boolean;
   dragging?: boolean;
   transform?: Transform | null;
@@ -20,7 +21,8 @@ const Item = React.memo(
     (
       {
         label,
-        onRemove,
+        onEdit,
+        onDelete,
         dragOverlay,
         dragging,
         transform,
@@ -67,15 +69,10 @@ const Item = React.memo(
               </Box>
             </Box>
           </Box>
-          <Remove
-            style={{ position: "absolute", right: 0, top: 0 }}
-            onClick={
-              onRemove
-                ? onRemove
-                : () => {
-                    return;
-                  }
-            }
+          <EditAction
+            onEdit={onEdit ? onEdit : () => null}
+            onDelete={onDelete ? onDelete : () => null}
+            absolute={true}
           />
         </Box>
       );

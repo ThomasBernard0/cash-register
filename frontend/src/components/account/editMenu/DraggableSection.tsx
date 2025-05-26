@@ -8,11 +8,19 @@ type Props = {
   id: UniqueIdentifier;
   title: string;
   items: UniqueIdentifier[];
-  onRemove: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
   children: React.ReactNode;
 };
 
-const DraggableSection = ({ id, title, items, onRemove, children }: Props) => {
+const DraggableSection = ({
+  id,
+  title,
+  items,
+  onEdit,
+  onDelete,
+  children,
+}: Props) => {
   const {
     active,
     attributes,
@@ -38,7 +46,8 @@ const DraggableSection = ({ id, title, items, onRemove, children }: Props) => {
     <Section
       ref={setNodeRef}
       title={title}
-      onRemove={onRemove}
+      onEdit={onEdit}
+      onDelete={onDelete}
       style={{
         transition,
         transform: CSS.Translate.toString(transform),
