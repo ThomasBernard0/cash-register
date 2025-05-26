@@ -63,6 +63,33 @@ export const useSections = () => {
     }
   };
 
+  const editSection = async (
+    sectionId: string,
+    title: string,
+    color: string
+  ): Promise<void> => {
+    try {
+      const res = await api.patch<Section[]>(`/sections/${sectionId}`, {
+        title,
+        color,
+      });
+      setSections(res.data);
+    } catch (error: any) {
+      console.error("Failed to edit section:", error);
+      throw new Error("Unable to edit section.");
+    }
+  };
+
+  const deleteSection = async (sectionId: string): Promise<void> => {
+    try {
+      const res = await api.delete<Section[]>(`/sections/${sectionId}`);
+      setSections(res.data);
+    } catch (error: any) {
+      console.error("Failed to delete section:", error);
+      throw new Error("Unable to delete section.");
+    }
+  };
+
   const createItem = async (sectionId: string): Promise<void> => {
     try {
       const res = await api.post<Section[]>("/sections/items", {
@@ -75,13 +102,20 @@ export const useSections = () => {
     }
   };
 
-  const deleteSection = async (sectionId: string): Promise<void> => {
+  const editItem = async (
+    itemId: string,
+    label: string,
+    priceInCent: number
+  ): Promise<void> => {
     try {
-      const res = await api.delete<Section[]>(`/sections/${sectionId}`);
+      const res = await api.patch<Section[]>(`/sections/items/${itemId}`, {
+        label,
+        priceInCent,
+      });
       setSections(res.data);
     } catch (error: any) {
-      console.error("Failed to delete section:", error);
-      throw new Error("Unable to delete section.");
+      console.error("Failed to edit item:", error);
+      throw new Error("Unable to edit item.");
     }
   };
 
@@ -102,8 +136,10 @@ export const useSections = () => {
     reorderSections,
     setLocalOrder,
     createSection,
-    createItem,
+    editSection,
     deleteSection,
+    createItem,
+    editItem,
     deleteItem,
   };
 };

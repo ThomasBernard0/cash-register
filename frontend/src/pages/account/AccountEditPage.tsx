@@ -51,8 +51,10 @@ const AccountEditPage: React.FC = () => {
     reorderSections,
     setLocalOrder,
     createSection,
-    createItem,
+    editSection,
     deleteSection,
+    createItem,
+    editItem,
     deleteItem,
   } = useSections();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -64,6 +66,10 @@ const AccountEditPage: React.FC = () => {
 
   const [isEditSectionModalOpen, setIsEditSectionModalOpen] = useState(false);
   const [isEditItemModalOpen, setIsEditItemModalOpen] = useState(false);
+  const [editingSection, setEditingSection] = useState<SectionType | null>(
+    null
+  );
+  const [editingItem, setEditingItem] = useState<ItemType | null>(null);
 
   const idInSections = (id: UniqueIdentifier): boolean => {
     return sections.some((section) => section.id === id);
@@ -323,7 +329,10 @@ const AccountEditPage: React.FC = () => {
                 id={section.id}
                 title={section.title}
                 items={section.items.map((item) => item.id)}
-                onEdit={() => setIsEditSectionModalOpen(true)}
+                onEdit={() => {
+                  setEditingSection(section);
+                  setIsEditSectionModalOpen(true);
+                }}
                 onDelete={() => deleteSection(section.id)}
               >
                 <SortableContext
@@ -335,7 +344,10 @@ const AccountEditPage: React.FC = () => {
                       key={item.id}
                       label={item.label}
                       id={item.id}
-                      onEdit={() => setIsEditItemModalOpen(true)}
+                      onEdit={() => {
+                        setEditingItem(item);
+                        setIsEditItemModalOpen(true);
+                      }}
                       onDelete={() => {
                         deleteItem(item.id);
                       }}
@@ -383,21 +395,19 @@ const AccountEditPage: React.FC = () => {
       </DndContext>
       <EditSectionModal
         open={isEditSectionModalOpen}
+        section={editingSection}
         onClose={() => {
           setIsEditSectionModalOpen(false);
         }}
-        onEdit={() => {
-          return;
-        }}
+        onEdit={editSection}
       />
       <EditItemModal
         open={isEditItemModalOpen}
+        item={editingItem}
         onClose={() => {
           setIsEditItemModalOpen(false);
         }}
-        onEdit={() => {
-          return;
-        }}
+        onEdit={editItem}
       />
     </>
   );

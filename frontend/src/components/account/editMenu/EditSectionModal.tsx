@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, TextField, Button, Grid } from "@mui/material";
+import { type Section } from "../../../types/section";
 
 const COLORS = [
+  "#FFFFFF",
   "#F87171",
   "#FBBF24",
   "#34D399",
@@ -12,13 +14,36 @@ const COLORS = [
 
 type Props = {
   open: boolean;
+  section: Section | null;
   onClose: () => void;
-  onEdit: () => void;
+  onEdit: (sectionId: string, title: string, color: string) => void;
 };
 
-const EditSectionModal: React.FC<Props> = ({ open, onClose, onEdit }) => {
+const EditSectionModal: React.FC<Props> = ({
+  open,
+  section,
+  onClose,
+  onEdit,
+}) => {
   const [title, setTitle] = useState<string>("");
   const [color, setColor] = useState<string>(COLORS[0]);
+
+  useEffect(() => {
+    if (section) {
+      setTitle(section.title);
+      setColor(section.color.toString());
+    } else {
+      setTitle("");
+      setColor("");
+    }
+  }, [section]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!section || !isFormValid) return;
+    onEdit(section.id, title, color);
+    onClose();
+  };
 
   const isFormValid = () => {
     return title.trim() !== "" && color.trim() !== "";
@@ -27,6 +52,8 @@ const EditSectionModal: React.FC<Props> = ({ open, onClose, onEdit }) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Box
+        component="form"
+        onSubmit={handleSubmit}
         sx={{
           position: "absolute",
           top: "50%",
@@ -76,7 +103,12 @@ const EditSectionModal: React.FC<Props> = ({ open, onClose, onEdit }) => {
           </Grid>
         </>
         <Box sx={{ mt: "auto", pt: 2 }}>
-          <Button variant="contained" fullWidth disabled={!isFormValid()}>
+          <Button
+            variant="contained"
+            fullWidth
+            disabled={!isFormValid()}
+            type="submit"
+          >
             Modifier
           </Button>
         </Box>

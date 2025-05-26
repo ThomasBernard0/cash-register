@@ -1,15 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
+import { type Item } from "../../../types/section";
 
 type Props = {
   open: boolean;
+  item: Item | null;
   onClose: () => void;
-  onEdit: () => void;
+  onEdit: (itemId: string, label: string, priceInCent: number) => void;
 };
 
-const EditItemModal: React.FC<Props> = ({ open, onClose, onEdit }) => {
+const EditItemModal: React.FC<Props> = ({ open, item, onClose, onEdit }) => {
   const [label, setLabel] = useState<string>("");
   const [price, setPrice] = useState<string>("");
+
+  useEffect(() => {
+    if (item) {
+      setLabel(item.label);
+      setPrice(item.priceInCent.toString());
+    } else {
+      setLabel("");
+      setPrice("");
+    }
+  }, [item]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!item || !isFormValid) return;
+    const priceInCent = Math.round(parseFloat(price) * 100);
+    onEdit(item.id, label, priceInCent);
+    onClose();
+  };
 
   const isFormValid = () => {
     return label.trim() !== "" && price.trim() !== "";
@@ -18,6 +38,8 @@ const EditItemModal: React.FC<Props> = ({ open, onClose, onEdit }) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Box
+        component="form"
+        onSubmit={handleSubmit}
         sx={{
           position: "absolute",
           top: "50%",
@@ -54,7 +76,12 @@ const EditItemModal: React.FC<Props> = ({ open, onClose, onEdit }) => {
           />
         </>
         <Box sx={{ mt: "auto", pt: 2 }}>
-          <Button variant="contained" fullWidth disabled={!isFormValid()}>
+          <Button
+            variant="contained"
+            fullWidth
+            disabled={!isFormValid()}
+            type="submit"
+          >
             Modifier
           </Button>
         </Box>
