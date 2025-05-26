@@ -29,15 +29,12 @@ import {
   rectSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-
 import { multipleContainersCoordinateGetter } from "../../helpers/multipleContainersKeyboardCoordinates";
-
 import Item from "./Item";
 import DraggableSection from "./DraggableSection";
 import Section from "./Section";
 import DraggableItem from "./DraggableItem";
 import { useSections } from "../../api/section";
-
 import type { Section as SectionType } from "../../types/section";
 import type { Item as ItemType } from "../../types/section";
 import { AddItemButton } from "./AddItemButton";
@@ -46,6 +43,7 @@ export function MultipleSections() {
   const { sections, loading, error, reorderSections, setLocalOrder } =
     useSections();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const initialContainer = useRef<UniqueIdentifier | undefined>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewSection = useRef(false);
   const coordinateGetter: KeyboardCoordinateGetter =
@@ -134,36 +132,30 @@ export function MultipleSections() {
 
   const onDragStart = ({ active }: any) => {
     setActiveId(active.id);
+    initialContainer.current = findElement(active.id);
   };
 
   const onDragOver = ({ active, over }: DragOverEvent) => {
     const overId = over?.id;
-
     if (overId == null || idInSections(active.id)) {
       return;
     }
-
     const overContainer = findElement(overId);
     const activeContainer = findElement(active.id);
-
     if (!overContainer || !activeContainer) {
       return;
     }
-
     const activeIndex = getItemsBySectionId(activeContainer).findIndex(
       (item) => item.id === active.id
     );
-
     let overIndex = getItemsBySectionId(overContainer).findIndex(
       (item) => item.id === overId
     );
     if (overId.toString().endsWith("-placeholder")) {
       overIndex = getItemsBySectionId(overContainer).length;
     }
-
     if (activeContainer !== overContainer) {
       recentlyMovedToNewSection.current = true;
-
       const itemToMove = getItemsBySectionId(activeContainer)[activeIndex];
       if (!itemToMove) return;
 
@@ -184,26 +176,8 @@ export function MultipleSections() {
         }
         return section;
       });
-
       setLocalOrder(newSections);
       return;
-    }
-
-    if (activeContainer === overContainer && active.id !== overId) {
-      const itemToMove = getItemsBySectionId(activeContainer)[activeIndex];
-      if (!itemToMove) return;
-
-      const newSections = sections.map((section) => {
-        if (section.id === activeContainer) {
-          return {
-            ...section,
-            items: arrayMove(section.items, activeIndex, overIndex),
-          };
-        }
-        return section;
-      });
-
-      setLocalOrder(newSections);
     }
   };
 
@@ -224,19 +198,16 @@ export function MultipleSections() {
       return;
     }
     const activeContainer = findElement(active.id);
-
     if (!activeContainer) {
       setActiveId(null);
       return;
     }
-
     const overId = over?.id;
     if (overId == null) {
       setActiveId(null);
       return;
     }
     const overContainer = findElement(overId);
-
     if (overContainer) {
       const activeIndex = getItemsBySectionId(activeContainer).findIndex(
         (item) => item.id == active.id
@@ -246,8 +217,10 @@ export function MultipleSections() {
         : getItemsBySectionId(overContainer).findIndex(
             (item) => item.id == overId
           );
-
-      if (activeIndex !== overIndex) {
+      if (
+        activeIndex !== overIndex ||
+        initialContainer.current !== overContainer
+      ) {
         const newSections = sections.map((section: SectionType) => {
           if (section.id == overContainer) {
             return {
