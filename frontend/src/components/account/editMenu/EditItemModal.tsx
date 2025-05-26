@@ -16,7 +16,7 @@ const EditItemModal: React.FC<Props> = ({ open, item, onClose, onEdit }) => {
   useEffect(() => {
     if (item) {
       setLabel(item.label);
-      setPrice(item.priceInCent.toString());
+      setPrice((item.priceInCent / 100).toFixed(2));
     } else {
       setLabel("");
       setPrice("");
