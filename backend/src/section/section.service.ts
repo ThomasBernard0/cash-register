@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import {
   CreateItemDto,
   CreateSectionDto,
-  SectionOrderEntry,
+  OrderSectionDto,
   UpdateItemDto,
   UpdateSectionDto,
 } from './section.dto';
@@ -44,10 +44,58 @@ export class SectionService {
     }
   }
 
+  async reorderSections(accountId: number, data: OrderSectionDto[]) {
+    try {
+      await this.prisma.$transaction(async (prisma) => {
+        for (let i = 0; i < data.length; i++) {
+          const sectionInput = data[i];
+
+          const section = await prisma.section.findUnique({
+            where: { id: sectionInput.id },
+          });
+          if (!section)
+            throw new NotFoundException(`Section ${sectionInput.id} not found`);
+          this.verifyAccountOwnership(accountId, section.accountId);
+
+          if (section.order !== i) {
+            await prisma.section.update({
+              where: { id: sectionInput.id },
+              data: { order: i },
+            });
+          }
+
+          for (let j = 0; j < sectionInput.items.length; j++) {
+            const itemInput = sectionInput.items[j];
+            const item = await prisma.item.findUnique({
+              where: { id: itemInput.id },
+            });
+            if (!item)
+              throw new NotFoundException(`Item ${itemInput.id} not found`);
+
+            const updates: any = {};
+            if (item.sectionId !== sectionInput.id)
+              updates.sectionId = sectionInput.id;
+            if (item.order !== j) updates.order = j;
+
+            if (Object.keys(updates).length > 0) {
+              await prisma.item.update({
+                where: { id: itemInput.id },
+                data: updates,
+              });
+            }
+          }
+        }
+      });
+      return { success: true };
+    } catch (error) {
+      throw new BadRequestException('Failed to reorder sections');
+    }
+  }
+
   async createSection(
     data: CreateSectionDto,
     accountId: number,
-  ): Promise<Section> {
+  ): Promise<Section[]> {
     try {
       const lastSection = await this.prisma.section.findFirst({
         where: { accountId },
@@ -55,13 +103,14 @@ export class SectionService {
       });
 
       const nextOrder = lastSection ? lastSection.order + 1 : 0;
-      return await this.prisma.section.create({
+      await this.prisma.section.create({
         data: {
           ...data,
           accountId,
           order: nextOrder,
         },
       });
+      return this.getAllSectionsWithItems(accountId);
     } catch (error) {
       throw new BadRequestException('Failed to create section');
     }
@@ -71,51 +120,29 @@ export class SectionService {
     accountId: number,
     id: string,
     data: UpdateSectionDto,
-  ): Promise<Section> {
+  ): Promise<Section[]> {
     try {
       const section = await this.getSectionById(id);
       if (!section) throw new NotFoundException('Section not found');
       this.verifyAccountOwnership(accountId, section.accountId);
 
-      return this.prisma.section.update({ where: { id }, data });
+      await this.prisma.section.update({ where: { id }, data });
+      return this.getAllSectionsWithItems(accountId);
     } catch {
       throw new BadRequestException('Failed to update section');
     }
   }
 
-  async deleteSection(accountId: number, id: string): Promise<Section> {
+  async deleteSection(accountId: number, id: string): Promise<Section[]> {
     try {
       const section = await this.getSectionById(id);
       if (!section) throw new NotFoundException('Section not found');
       this.verifyAccountOwnership(accountId, section.accountId);
 
-      return this.prisma.section.delete({ where: { id } });
+      await this.prisma.section.delete({ where: { id } });
+      return this.getAllSectionsWithItems(accountId);
     } catch {
       throw new BadRequestException('Failed to delete section');
-    }
-  }
-
-  async reorderSections(accountId: number, ordered: SectionOrderEntry[]) {
-    try {
-      const verificationPromises = ordered.map(async (entry) => {
-        const section = await this.getSectionById(entry.id);
-        if (!section)
-          throw new NotFoundException(`Section ${entry.id} not found`);
-        this.verifyAccountOwnership(accountId, section.accountId);
-      });
-      await Promise.all(verificationPromises);
-
-      const updatePromises = ordered.map((entry) =>
-        this.prisma.section.update({
-          where: { id: entry.id },
-          data: { order: entry.order },
-        }),
-      );
-      await Promise.all(updatePromises);
-
-      return { success: true };
-    } catch (error) {
-      throw new BadRequestException('Failed to reorder sections');
     }
   }
 
@@ -126,7 +153,7 @@ export class SectionService {
   async addItemToSection(
     accountId: number,
     data: CreateItemDto,
-  ): Promise<Item> {
+  ): Promise<Section[]> {
     try {
       const section = await this.getSectionById(data.sectionId);
       if (!section) throw new NotFoundException('Section not found');
@@ -138,12 +165,13 @@ export class SectionService {
       });
 
       const nextOrder = lastItem ? lastItem.order + 1 : 0;
-      return this.prisma.item.create({
+      await this.prisma.item.create({
         data: {
           ...data,
           order: nextOrder,
         },
       });
+      return this.getAllSectionsWithItems(accountId);
     } catch {
       throw new BadRequestException('Failed to add item');
     }
@@ -153,7 +181,7 @@ export class SectionService {
     accountId: number,
     id: string,
     data: UpdateItemDto,
-  ): Promise<Item> {
+  ): Promise<Section[]> {
     try {
       const item = await this.getItemById(id);
       if (!item) throw new NotFoundException('Item not found');
@@ -162,22 +190,24 @@ export class SectionService {
       if (!section) throw new NotFoundException('Section not found');
       this.verifyAccountOwnership(accountId, section.accountId);
 
-      return this.prisma.item.update({ where: { id }, data });
+      await this.prisma.item.update({ where: { id }, data });
+      return this.getAllSectionsWithItems(accountId);
     } catch {
       throw new BadRequestException('Failed to update item');
     }
   }
 
-  async deleteItem(accountId: number, id: string): Promise<Item> {
-    const item = await this.getItemById(id);
-    if (!item) throw new NotFoundException('Item not found');
-
-    const section = await this.getSectionById(item.sectionId);
-    if (!section) throw new NotFoundException('Section not found');
-    this.verifyAccountOwnership(accountId, section.accountId);
-
+  async deleteItem(accountId: number, id: string): Promise<Section[]> {
     try {
-      return this.prisma.item.delete({ where: { id } });
+      const item = await this.getItemById(id);
+      if (!item) throw new NotFoundException('Item not found');
+
+      const section = await this.getSectionById(item.sectionId);
+      if (!section) throw new NotFoundException('Section not found');
+      this.verifyAccountOwnership(accountId, section.accountId);
+
+      await this.prisma.item.delete({ where: { id } });
+      return this.getAllSectionsWithItems(accountId);
     } catch {
       throw new BadRequestException('Failed to delete item');
     }

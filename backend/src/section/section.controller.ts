@@ -16,9 +16,9 @@ import { Section, Item } from '@prisma/client';
 import {
   CreateItemDto,
   CreateSectionDto,
+  OrderSectionDto,
   UpdateItemDto,
   UpdateSectionDto,
-  UpdateSectionOrderDto,
 } from './section.dto';
 
 @Controller('api/sections')
@@ -32,19 +32,19 @@ export class SectionController {
     return this.sectionService.getAllSectionsWithItems(accountId);
   }
 
+  @Patch('reorder')
+  updateOrder(@Body() dto: OrderSectionDto[], @Req() req) {
+    const accountId = req.user.sub;
+    return this.sectionService.reorderSections(accountId, dto);
+  }
+
   @Post()
   async createSection(
     @Body() data: CreateSectionDto,
     @Req() req,
-  ): Promise<Section> {
+  ): Promise<Section[]> {
     const accountId: number = req.user.sub;
     return this.sectionService.createSection(data, accountId);
-  }
-
-  @Patch('reorder')
-  updateOrder(@Body() dto: UpdateSectionOrderDto, @Req() req) {
-    const accountId = req.user.sub;
-    return this.sectionService.reorderSections(accountId, dto.order);
   }
 
   @Patch(':id')
@@ -52,7 +52,7 @@ export class SectionController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() data: UpdateSectionDto,
     @Req() req,
-  ): Promise<Section> {
+  ): Promise<Section[]> {
     const accountId: number = req.user.sub;
     return this.sectionService.updateSection(accountId, id, data);
   }
@@ -61,14 +61,16 @@ export class SectionController {
   async deleteSection(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Req() req,
-  ): Promise<{ message: string }> {
+  ): Promise<Section[]> {
     const accountId = req.user.sub;
-    await this.sectionService.deleteSection(accountId, id);
-    return { message: 'Section deleted' };
+    return this.sectionService.deleteSection(accountId, id);
   }
 
   @Post('/items')
-  async createItem(@Body() data: CreateItemDto, @Req() req): Promise<Item> {
+  async createItem(
+    @Body() data: CreateItemDto,
+    @Req() req,
+  ): Promise<Section[]> {
     const accountId = req.user.sub;
     return this.sectionService.addItemToSection(accountId, data);
   }
@@ -78,7 +80,7 @@ export class SectionController {
     @Param('itemId', new ParseUUIDPipe()) itemId: string,
     @Body() data: UpdateItemDto,
     @Req() req,
-  ): Promise<Item> {
+  ): Promise<Section[]> {
     const accountId = req.user.sub;
     return this.sectionService.updateItem(accountId, itemId, data);
   }
@@ -87,9 +89,8 @@ export class SectionController {
   async deleteItem(
     @Param('itemId', new ParseUUIDPipe()) itemId: string,
     @Req() req,
-  ): Promise<{ message: string }> {
+  ): Promise<Section[]> {
     const accountId = req.user.sub;
-    await this.sectionService.deleteItem(accountId, itemId);
-    return { message: 'Item deleted' };
+    return this.sectionService.deleteItem(accountId, itemId);
   }
 }

@@ -27,6 +27,22 @@ export class UpdateSectionDto {
   color?: string;
 }
 
+export class OrderSectionDto {
+  @IsString()
+  id!: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OrderItemDto)
+  items?: OrderItemDto[];
+}
+
+export class OrderItemDto {
+  @IsString()
+  id!: string;
+}
+
 export class CreateItemDto {
   @IsString()
   label: string;
@@ -52,20 +68,4 @@ export class UpdateItemDto {
   @IsOptional()
   @IsString()
   sectionId?: string;
-}
-
-export class SectionOrderEntry {
-  @IsUUID()
-  id: string;
-
-  @IsInt()
-  @Min(0)
-  order: number;
-}
-
-export class UpdateSectionOrderDto {
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => SectionOrderEntry)
-  order: SectionOrderEntry[];
 }
