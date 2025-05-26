@@ -80,6 +80,16 @@ export const useSections = () => {
       const res = await api.delete<Section[]>(`/sections/${sectionId}`);
       setSections(res.data);
     } catch (error: any) {
+      console.error("Failed to delete section:", error);
+      throw new Error("Unable to delete section.");
+    }
+  };
+
+  const deleteItem = async (itemId: string): Promise<void> => {
+    try {
+      const res = await api.delete<Section[]>(`/sections/items/${itemId}`);
+      setSections(res.data);
+    } catch (error: any) {
       console.error("Failed to delete item:", error);
       throw new Error("Unable to delete item.");
     }
@@ -94,5 +104,6 @@ export const useSections = () => {
     createSection,
     createItem,
     deleteSection,
+    deleteItem,
   };
 };

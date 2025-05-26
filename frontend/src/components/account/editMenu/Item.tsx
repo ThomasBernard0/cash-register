@@ -6,26 +6,26 @@ import Remove from "./Remove";
 import { Typography } from "@mui/material";
 
 type Props = {
+  label: React.ReactNode;
+  onRemove?(): void;
   dragOverlay?: boolean;
   dragging?: boolean;
   transform?: Transform | null;
   transition?: string | null;
   listeners?: DraggableSyntheticListeners;
-  value: React.ReactNode;
-  onRemove?(): void;
 };
 
 const Item = React.memo(
   React.forwardRef<HTMLDivElement, Props>(
     (
       {
+        label,
+        onRemove,
         dragOverlay,
         dragging,
         transform,
         transition,
         listeners,
-        value,
-        onRemove,
       },
       ref
     ) => {
@@ -39,41 +39,44 @@ const Item = React.memo(
       }, [dragOverlay]);
 
       return (
-        <Box
-          ref={ref}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            height: 100,
-            border: "1px solid black",
-            transform: transform
-              ? `translate3d(${Math.round(transform.x)}px, ${Math.round(
-                  transform.y
-                )}px, 0) scale(${transform.scaleX ?? 1}, ${
-                  transform.scaleY ?? 1
-                })`
-              : undefined,
-            transition: transition ?? undefined,
-            opacity: dragOverlay ? 1 : dragging ? 0.5 : 1,
-            zIndex: dragOverlay ? 999 : "auto",
-          }}
-          {...listeners}
-        >
-          <Box sx={{ height: "40px", display: "flex" }}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography>{value}</Typography>
+        <Box sx={{ position: "relative" }}>
+          <Box
+            ref={ref}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              height: 100,
+              border: "1px solid black",
+              transform: transform
+                ? `translate3d(${Math.round(transform.x)}px, ${Math.round(
+                    transform.y
+                  )}px, 0) scale(${transform.scaleX ?? 1}, ${
+                    transform.scaleY ?? 1
+                  })`
+                : undefined,
+              transition: transition ?? undefined,
+              opacity: dragOverlay ? 1 : dragging ? 0.5 : 1,
+              zIndex: dragOverlay ? 999 : "auto",
+            }}
+            {...listeners}
+          >
+            <Box sx={{ height: "40px", display: "flex" }}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography>{label}</Typography>
+              </Box>
             </Box>
-            <Remove
-              onClick={
-                onRemove
-                  ? onRemove
-                  : () => {
-                      return;
-                    }
-              }
-            />
           </Box>
+          <Remove
+            style={{ position: "absolute", right: 0, top: 0 }}
+            onClick={
+              onRemove
+                ? onRemove
+                : () => {
+                    return;
+                  }
+            }
+          />
         </Box>
       );
     }

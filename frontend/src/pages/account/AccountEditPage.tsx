@@ -51,6 +51,7 @@ const AccountEditPage: React.FC = () => {
     createSection,
     createItem,
     deleteSection,
+    deleteItem,
   } = useSections();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const initialContainer = useRef<UniqueIdentifier | undefined>(null);
@@ -249,13 +250,13 @@ const AccountEditPage: React.FC = () => {
   const renderSectionDragOverlay = (section: SectionType) => (
     <Section title={section.title}>
       {section.items.map((item) => (
-        <Item key={item.id} value={item.label} />
+        <Item key={item.id} label={item.label} />
       ))}
     </Section>
   );
 
   const renderSortableItemDragOverlay = (item: ItemType) => (
-    <Item value={item.label} dragOverlay />
+    <Item label={item.label} dragOverlay />
   );
 
   const dropAnimation: DropAnimation = {
@@ -327,6 +328,10 @@ const AccountEditPage: React.FC = () => {
                     key={item.id}
                     label={item.label}
                     id={item.id}
+                    onRemove={() => {
+                      console.log("test");
+                      deleteItem(item.id);
+                    }}
                   />
                 ))}
                 <AddItemButton
