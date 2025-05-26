@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
-
-import Remove from "../account/editMenu/Remove";
+import Box from "@mui/material/Box";
+import Remove from "./Remove";
 
 type Props = {
   dragOverlay?: boolean;
@@ -38,12 +38,12 @@ const Item = React.memo(
       }, [dragOverlay]);
 
       return (
-        <div
+        <Box
           ref={ref}
-          style={{
+          sx={{
             width: "100%",
-            height: "100px",
-            border: "solid 1px black",
+            height: 100,
+            border: "1px solid black",
             transform: transform
               ? `translate3d(${Math.round(transform.x)}px, ${Math.round(
                   transform.y
@@ -53,13 +53,13 @@ const Item = React.memo(
               : undefined,
             transition: transition ?? undefined,
             opacity: dragOverlay ? 1 : dragging ? 0.5 : 1,
-            zIndex: dragOverlay ? 999 : undefined,
+            zIndex: dragOverlay ? 999 : "auto",
           }}
           {...listeners}
         >
-          {value}
+          <Box sx={{ flexGrow: 1 }}>{value}</Box>
           {onRemove && <Remove onClick={onRemove} />}
-        </div>
+        </Box>
       );
     }
   )
