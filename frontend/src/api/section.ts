@@ -53,6 +53,16 @@ export const useSections = () => {
     [debouncedSaveOrder]
   );
 
+  const createSection = async (): Promise<void> => {
+    try {
+      const res = await api.post<Section[]>("/sections");
+      setSections(res.data);
+    } catch (error: any) {
+      console.error("Failed to create section:", error);
+      throw new Error("Unable to create section.");
+    }
+  };
+
   const createItem = async (sectionId: string): Promise<void> => {
     try {
       const res = await api.post<Section[]>("/sections/items", {
@@ -65,13 +75,13 @@ export const useSections = () => {
     }
   };
 
-  const createSection = async (): Promise<void> => {
+  const deleteSection = async (sectionId: string): Promise<void> => {
     try {
-      const res = await api.post<Section[]>("/sections");
+      const res = await api.delete<Section[]>(`/sections/${sectionId}`);
       setSections(res.data);
     } catch (error: any) {
-      console.error("Failed to create item:", error);
-      throw new Error("Unable to create item.");
+      console.error("Failed to delete item:", error);
+      throw new Error("Unable to delete item.");
     }
   };
 
@@ -83,21 +93,6 @@ export const useSections = () => {
     setLocalOrder,
     createSection,
     createItem,
+    deleteSection,
   };
-};
-
-export const createSection = async (
-  title: string,
-  color: string
-): Promise<Section> => {
-  try {
-    const res = await api.post<Section>("/sections", {
-      title,
-      color,
-    });
-    return res.data;
-  } catch (error: any) {
-    console.error("Failed to create account:", error);
-    throw new Error("Unable to create account. It may already exist.");
-  }
 };

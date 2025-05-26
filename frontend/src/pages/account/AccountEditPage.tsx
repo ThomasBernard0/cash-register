@@ -50,6 +50,7 @@ const AccountEditPage: React.FC = () => {
     setLocalOrder,
     createSection,
     createItem,
+    deleteSection,
   } = useSections();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const initialContainer = useRef<UniqueIdentifier | undefined>(null);
@@ -203,8 +204,6 @@ const AccountEditPage: React.FC = () => {
 
         return arrayMove(sections, activeIndex, overIndex);
       })();
-      console.log("1");
-      console.log(newSections);
       reorderSections(newSections);
       return;
     }
@@ -241,8 +240,6 @@ const AccountEditPage: React.FC = () => {
           }
           return { ...section };
         });
-        console.log("2");
-        console.log(newSections);
         reorderSections(newSections);
       }
     }
@@ -319,9 +316,7 @@ const AccountEditPage: React.FC = () => {
               id={section.id}
               title={section.title}
               items={section.items.map((item) => item.id)}
-              onRemove={() => {
-                return;
-              }}
+              onRemove={() => deleteSection(section.id)}
             >
               <SortableContext
                 items={section.items.map((item) => item.id)}

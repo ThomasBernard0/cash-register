@@ -14,7 +14,7 @@ import {
   MenuItem,
   type SelectChangeEvent,
 } from "@mui/material";
-import { useSections, createSection } from "../../api/section";
+import { useSections } from "../../api/section";
 
 const COLORS = [
   "#F87171",
@@ -75,7 +75,6 @@ const AddSectionElementModal: React.FC<CreateModalProps> = ({
     setLoading(true);
     try {
       if (mode === "section") {
-        await createSection(title, color);
       } else {
         const priceInCent = Math.round(parseFloat(price) * 100);
       }
