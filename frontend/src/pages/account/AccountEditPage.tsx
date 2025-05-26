@@ -40,6 +40,8 @@ import AddItemButton from "../../components/account/editMenu/AddItemButton";
 
 import { type Section as SectionType } from "../../types/section";
 import { type Item as ItemType } from "../../types/section";
+import EditItemModal from "../../components/account/editMenu/EditItemModal";
+import EditSectionModal from "../../components/account/editMenu/EditSectionModal";
 
 const AccountEditPage: React.FC = () => {
   const {
@@ -59,6 +61,9 @@ const AccountEditPage: React.FC = () => {
   const recentlyMovedToNewSection = useRef(false);
   const coordinateGetter: KeyboardCoordinateGetter =
     multipleContainersCoordinateGetter;
+
+  const [isEditSectionModalOpen, setIsEditSectionModalOpen] = useState(false);
+  const [isEditItemModalOpen, setIsEditItemModalOpen] = useState(false);
 
   const idInSections = (id: UniqueIdentifier): boolean => {
     return sections.some((section) => section.id === id);
@@ -284,97 +289,117 @@ const AccountEditPage: React.FC = () => {
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={collisionDetectionStrategy}
-      measuring={{
-        droppable: {
-          strategy: MeasuringStrategy.Always,
-        },
-      }}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDragEnd={onDragEnd}
-      onDragCancel={onDragCancel}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          boxSizing: "border-box",
-          p: 1,
-          gap: 1,
-          width: "100%",
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetectionStrategy}
+        measuring={{
+          droppable: {
+            strategy: MeasuringStrategy.Always,
+          },
         }}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDragEnd={onDragEnd}
+        onDragCancel={onDragCancel}
       >
-        <SortableContext
-          items={sections.map((section) => section.id)}
-          strategy={verticalListSortingStrategy}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            boxSizing: "border-box",
+            p: 1,
+            gap: 1,
+            width: "100%",
+          }}
         >
-          {sections.map((section) => (
-            <DraggableSection
-              key={section.id}
-              id={section.id}
-              title={section.title}
-              items={section.items.map((item) => item.id)}
-              onEdit={() => null}
-              onDelete={() => deleteSection(section.id)}
-            >
-              <SortableContext
+          <SortableContext
+            items={sections.map((section) => section.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            {sections.map((section) => (
+              <DraggableSection
+                key={section.id}
+                id={section.id}
+                title={section.title}
                 items={section.items.map((item) => item.id)}
-                strategy={rectSortingStrategy}
+                onEdit={() => setIsEditSectionModalOpen(true)}
+                onDelete={() => deleteSection(section.id)}
               >
-                {section.items.map((item) => (
-                  <DraggableItem
-                    key={item.id}
-                    label={item.label}
-                    id={item.id}
-                    onEdit={() => null}
-                    onDelete={() => {
-                      deleteItem(item.id);
-                    }}
+                <SortableContext
+                  items={section.items.map((item) => item.id)}
+                  strategy={rectSortingStrategy}
+                >
+                  {section.items.map((item) => (
+                    <DraggableItem
+                      key={item.id}
+                      label={item.label}
+                      id={item.id}
+                      onEdit={() => setIsEditItemModalOpen(true)}
+                      onDelete={() => {
+                        deleteItem(item.id);
+                      }}
+                    />
+                  ))}
+                  <AddItemButton
+                    id={`${section.id}-placeholder`}
+                    onClick={() => createItem(section.id)}
                   />
-                ))}
-                <AddItemButton
-                  id={`${section.id}-placeholder`}
-                  onClick={() => createItem(section.id)}
-                />
-              </SortableContext>
-            </DraggableSection>
-          ))}
+                </SortableContext>
+              </DraggableSection>
+            ))}
 
-          {
-            <Button
-              onClick={createSection}
-              style={{
-                cursor: "pointer",
-                border: "dashed 1px black",
-              }}
-            >
-              <AddIcon />
-            </Button>
-          }
-        </SortableContext>
-      </Box>
-      {createPortal(
-        <DragOverlay dropAnimation={dropAnimation}>
-          {activeId
-            ? sections.some((section) => section.id === activeId)
-              ? renderSectionDragOverlay(
-                  sections.find((section) => section.id === activeId)!
-                )
-              : (() => {
-                  const activeItem = sections
-                    .flatMap((s) => s.items)
-                    .find((item) => item.id === activeId);
-                  if (!activeItem) return null;
-                  return renderSortableItemDragOverlay(activeItem);
-                })()
-            : null}
-        </DragOverlay>,
-        document.body
-      )}
-    </DndContext>
+            {
+              <Button
+                onClick={createSection}
+                style={{
+                  cursor: "pointer",
+                  border: "dashed 1px black",
+                }}
+              >
+                <AddIcon />
+              </Button>
+            }
+          </SortableContext>
+        </Box>
+        {createPortal(
+          <DragOverlay dropAnimation={dropAnimation}>
+            {activeId
+              ? sections.some((section) => section.id === activeId)
+                ? renderSectionDragOverlay(
+                    sections.find((section) => section.id === activeId)!
+                  )
+                : (() => {
+                    const activeItem = sections
+                      .flatMap((s) => s.items)
+                      .find((item) => item.id === activeId);
+                    if (!activeItem) return null;
+                    return renderSortableItemDragOverlay(activeItem);
+                  })()
+              : null}
+          </DragOverlay>,
+          document.body
+        )}
+      </DndContext>
+      <EditSectionModal
+        open={isEditSectionModalOpen}
+        onClose={() => {
+          setIsEditSectionModalOpen(false);
+        }}
+        onEdit={() => {
+          return;
+        }}
+      />
+      <EditItemModal
+        open={isEditItemModalOpen}
+        onClose={() => {
+          setIsEditItemModalOpen(false);
+        }}
+        onEdit={() => {
+          return;
+        }}
+      />
+    </>
   );
 };
 
