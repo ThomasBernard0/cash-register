@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import type { DraggableSyntheticListeners } from "@dnd-kit/core";
-import type { Transform } from "@dnd-kit/utilities";
+import { type DraggableSyntheticListeners } from "@dnd-kit/core";
+import { type Transform } from "@dnd-kit/utilities";
 import Box from "@mui/material/Box";
 import EditAction from "./EditAction";
 import { Typography } from "@mui/material";
+import { type Item as ItemType } from "../../../types/section";
 
 type Props = {
-  label: React.ReactNode;
+  item: ItemType;
   onEdit?(): void;
   onDelete?(): void;
   dragOverlay?: boolean;
@@ -20,7 +21,7 @@ const Item = React.memo(
   React.forwardRef<HTMLDivElement, Props>(
     (
       {
-        label,
+        item,
         onEdit,
         onDelete,
         dragOverlay,
@@ -63,10 +64,9 @@ const Item = React.memo(
             }}
             {...listeners}
           >
-            <Box sx={{ height: "40px", display: "flex" }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography>{label}</Typography>
-              </Box>
+            <Box sx={{ display: "flex", p: 2 }}>
+              <Typography>{item.label}</Typography>
+              <Typography>{item.priceInCent / 100}</Typography>
             </Box>
           </Box>
           <EditAction

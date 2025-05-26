@@ -261,13 +261,13 @@ const AccountEditPage: React.FC = () => {
   const renderSectionDragOverlay = (section: SectionType) => (
     <Section title={section.title}>
       {section.items.map((item) => (
-        <Item key={item.id} label={item.label} />
+        <Item key={item.id} item={item} />
       ))}
     </Section>
   );
 
   const renderSortableItemDragOverlay = (item: ItemType) => (
-    <Item label={item.label} dragOverlay />
+    <Item item={item} dragOverlay />
   );
 
   const dropAnimation: DropAnimation = {
@@ -342,7 +342,7 @@ const AccountEditPage: React.FC = () => {
                   {section.items.map((item) => (
                     <DraggableItem
                       key={item.id}
-                      label={item.label}
+                      item={item}
                       id={item.id}
                       onEdit={() => {
                         setEditingItem(item);

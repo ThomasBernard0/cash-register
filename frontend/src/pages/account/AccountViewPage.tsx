@@ -1,5 +1,5 @@
 import React from "react";
-import SectionGrid from "../../components/account/SectionGrid";
+import SectionGrid from "../../components/account/viewMenu/SectionGrid";
 import { useSections } from "../../api/section";
 
 const AccountViewPage: React.FC = () => {

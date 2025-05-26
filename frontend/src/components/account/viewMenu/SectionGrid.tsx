@@ -1,6 +1,6 @@
 import React from "react";
 import SectionBlock from "./SectionBlock";
-import type { Section } from "../../types/section";
+import type { Section } from "../../../types/section";
 import { Box } from "@mui/material";
 import {
   SortableContext,

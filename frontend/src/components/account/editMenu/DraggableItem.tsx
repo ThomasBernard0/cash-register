@@ -1,16 +1,17 @@
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import Item from "./Item";
+import { type Item as ItemType } from "../../../types/section";
 
 type Props = {
   id: UniqueIdentifier;
-  label: string;
+  item: ItemType;
   disabled?: boolean;
   onEdit: () => void;
   onDelete: () => void;
 };
 
-const DraggableItem = ({ id, label, disabled, onEdit, onDelete }: Props) => {
+const DraggableItem = ({ id, item, disabled, onEdit, onDelete }: Props) => {
   const { setNodeRef, listeners, isDragging, transform, transition } =
     useSortable({
       id,
@@ -18,7 +19,7 @@ const DraggableItem = ({ id, label, disabled, onEdit, onDelete }: Props) => {
   return (
     <Item
       ref={disabled ? undefined : setNodeRef}
-      label={label}
+      item={item}
       onEdit={onEdit}
       onDelete={onDelete}
       dragging={isDragging}
