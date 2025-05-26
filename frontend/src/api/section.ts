@@ -65,12 +65,23 @@ export const useSections = () => {
     }
   };
 
+  const createSection = async (): Promise<void> => {
+    try {
+      const res = await api.post<Section[]>("/sections");
+      setSections(res.data);
+    } catch (error: any) {
+      console.error("Failed to create item:", error);
+      throw new Error("Unable to create item.");
+    }
+  };
+
   return {
     sections,
     loading,
     error,
     reorderSections,
     setLocalOrder,
+    createSection,
     createItem,
   };
 };

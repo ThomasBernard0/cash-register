@@ -3,19 +3,10 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUUID,
   Min,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-
-export class CreateSectionDto {
-  @IsString()
-  title: string;
-
-  @IsString()
-  color: string;
-}
 
 export class UpdateSectionDto {
   @IsOptional()

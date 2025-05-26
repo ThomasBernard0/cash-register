@@ -30,6 +30,8 @@ import {
 import { multipleContainersCoordinateGetter } from "../../helpers/multipleContainersKeyboardCoordinates";
 import { useSections } from "../../api/section";
 
+import { Box, Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import DraggableSection from "../../components/account/editMenu/DraggableSection";
 import Section from "../../components/account/editMenu/Section";
 import DraggableItem from "../../components/account/editMenu/DraggableItem";
@@ -46,6 +48,7 @@ const AccountEditPage: React.FC = () => {
     error,
     reorderSections,
     setLocalOrder,
+    createSection,
     createItem,
   } = useSections();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
@@ -296,14 +299,14 @@ const AccountEditPage: React.FC = () => {
       onDragEnd={onDragEnd}
       onDragCancel={onDragCancel}
     >
-      <div
-        style={{
-          display: "grid",
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
           boxSizing: "border-box",
-          padding: 20,
-          gap: 4,
+          p: 1,
+          gap: 1,
           width: "100%",
-          gridAutoFlow: "row",
         }}
       >
         <SortableContext
@@ -340,16 +343,18 @@ const AccountEditPage: React.FC = () => {
           ))}
 
           {
-            <button
-              onClick={() => {
-                return;
+            <Button
+              onClick={createSection}
+              style={{
+                cursor: "pointer",
+                border: "dashed 1px black",
               }}
             >
-              + Add column
-            </button>
+              <AddIcon />
+            </Button>
           }
         </SortableContext>
-      </div>
+      </Box>
       {createPortal(
         <DragOverlay dropAnimation={dropAnimation}>
           {activeId

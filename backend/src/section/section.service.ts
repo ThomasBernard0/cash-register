@@ -8,7 +8,6 @@ import { Item, Section } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   CreateItemDto,
-  CreateSectionDto,
   OrderSectionDto,
   UpdateItemDto,
   UpdateSectionDto,
@@ -92,10 +91,7 @@ export class SectionService {
     }
   }
 
-  async createSection(
-    data: CreateSectionDto,
-    accountId: number,
-  ): Promise<Section[]> {
+  async createSection(accountId: number): Promise<Section[]> {
     try {
       const lastSection = await this.prisma.section.findFirst({
         where: { accountId },
@@ -105,9 +101,10 @@ export class SectionService {
       const nextOrder = lastSection ? lastSection.order + 1 : 0;
       await this.prisma.section.create({
         data: {
-          ...data,
-          accountId,
+          title: 'Nouvelle section',
+          color: '#FFFFFF',
           order: nextOrder,
+          accountId,
         },
       });
       return this.getAllSectionsWithItems(accountId);

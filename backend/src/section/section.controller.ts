@@ -12,10 +12,9 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SectionService } from './section.service';
-import { Section, Item } from '@prisma/client';
+import { Section } from '@prisma/client';
 import {
   CreateItemDto,
-  CreateSectionDto,
   OrderSectionDto,
   UpdateItemDto,
   UpdateSectionDto,
@@ -39,12 +38,9 @@ export class SectionController {
   }
 
   @Post()
-  async createSection(
-    @Body() data: CreateSectionDto,
-    @Req() req,
-  ): Promise<Section[]> {
+  async createSection(@Req() req): Promise<Section[]> {
     const accountId: number = req.user.sub;
-    return this.sectionService.createSection(data, accountId);
+    return this.sectionService.createSection(accountId);
   }
 
   @Patch(':id')
