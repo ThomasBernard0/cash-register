@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import api from "./api";
-import type { Item, Section } from "../types/section";
+import type { Section } from "../types/section";
 import { debounce } from "@mui/material";
 
 export const useSections = () => {
@@ -53,13 +53,25 @@ export const useSections = () => {
     [debouncedSaveOrder]
   );
 
+  const createItem = async (sectionId: string): Promise<void> => {
+    try {
+      const res = await api.post<Section[]>("/sections/items", {
+        sectionId,
+      });
+      setSections(res.data);
+    } catch (error: any) {
+      console.error("Failed to create item:", error);
+      throw new Error("Unable to create item.");
+    }
+  };
+
   return {
     sections,
     loading,
     error,
-    refetch: fetchSections,
     reorderSections,
     setLocalOrder,
+    createItem,
   };
 };
 
@@ -71,24 +83,6 @@ export const createSection = async (
     const res = await api.post<Section>("/sections", {
       title,
       color,
-    });
-    return res.data;
-  } catch (error: any) {
-    console.error("Failed to create account:", error);
-    throw new Error("Unable to create account. It may already exist.");
-  }
-};
-
-export const createItem = async (
-  label: string,
-  priceInCent: number,
-  sectionId: string
-): Promise<Item> => {
-  try {
-    const res = await api.post<Item>("/sections/items", {
-      label,
-      priceInCent,
-      sectionId,
     });
     return res.data;
   } catch (error: any) {

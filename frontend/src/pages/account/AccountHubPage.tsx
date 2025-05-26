@@ -14,7 +14,7 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 
 const AccountHubPage: React.FC = () => {
-  const { sections, loading, error, refetch, reorderSections } = useSections();
+  const { sections, loading, error, reorderSections } = useSections();
   const [isAddElementModalOpen, setIsAddElementModalOpen] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -58,7 +58,9 @@ const AccountHubPage: React.FC = () => {
         onClose={() => {
           setIsAddElementModalOpen(false);
         }}
-        onCreated={refetch}
+        onCreated={() => {
+          return;
+        }}
       />
     </>
   );

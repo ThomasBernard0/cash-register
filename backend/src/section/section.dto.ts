@@ -45,13 +45,6 @@ export class OrderItemDto {
 
 export class CreateItemDto {
   @IsString()
-  label: string;
-
-  @IsInt()
-  @Min(0)
-  priceInCent: number;
-
-  @IsString()
   sectionId: string;
 }
 

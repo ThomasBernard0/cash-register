@@ -40,8 +40,14 @@ import { type Section as SectionType } from "../../types/section";
 import { type Item as ItemType } from "../../types/section";
 
 const AccountEditPage: React.FC = () => {
-  const { sections, loading, error, reorderSections, setLocalOrder } =
-    useSections();
+  const {
+    sections,
+    loading,
+    error,
+    reorderSections,
+    setLocalOrder,
+    createItem,
+  } = useSections();
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const initialContainer = useRef<UniqueIdentifier | undefined>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
@@ -327,9 +333,7 @@ const AccountEditPage: React.FC = () => {
                 ))}
                 <AddItemButton
                   id={`${section.id}-placeholder`}
-                  onClick={() => {
-                    return;
-                  }}
+                  onClick={() => createItem(section.id)}
                 />
               </SortableContext>
             </DraggableSection>

@@ -168,6 +168,8 @@ export class SectionService {
       await this.prisma.item.create({
         data: {
           ...data,
+          label: 'Nouvel item',
+          priceInCent: 0,
           order: nextOrder,
         },
       });
