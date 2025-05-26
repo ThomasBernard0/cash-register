@@ -1,18 +1,18 @@
 import React, { forwardRef } from "react";
-import { Box, Typography, IconButton, Paper, Grid } from "@mui/material";
-import Handle from "../account/editMenu/Handle";
-import Remove from "../account/editMenu/Remove";
+import { Box, Paper } from "@mui/material";
+import Handle from "./Handle";
+import Remove from "./Remove";
 
-export interface SectionProps {
+type Props = {
   title?: string;
   onRemove?(): void;
   children: React.ReactNode;
   style?: React.CSSProperties;
   hover?: boolean;
   handleProps?: React.HTMLAttributes<any>;
-}
+};
 
-const Section = forwardRef<HTMLDivElement, SectionProps>(
+const Section = forwardRef<HTMLDivElement, Props>(
   ({ title, onRemove, children, handleProps, style }, ref) => {
     return (
       <Paper

@@ -4,84 +4,46 @@ import type { Transform } from "@dnd-kit/utilities";
 
 import Remove from "../account/editMenu/Remove";
 
-export interface Props {
+type Props = {
   dragOverlay?: boolean;
-  color?: string;
-  disabled?: boolean;
   dragging?: boolean;
-  height?: number;
-  index?: number;
-  fadeIn?: boolean;
   transform?: Transform | null;
-  listeners?: DraggableSyntheticListeners;
-  sorting?: boolean;
-  style?: React.CSSProperties;
   transition?: string | null;
+  listeners?: DraggableSyntheticListeners;
   value: React.ReactNode;
   onRemove?(): void;
-  renderItem?(args: {
-    dragOverlay: boolean;
-    dragging: boolean;
-    sorting: boolean;
-    index: number | undefined;
-    listeners: DraggableSyntheticListeners;
-    ref: React.Ref<HTMLElement>;
-    transform: Props["transform"];
-    transition: Props["transition"];
-    value: Props["value"];
-  }): React.ReactElement;
-}
+};
 
 const Item = React.memo(
-  React.forwardRef<HTMLLIElement, Props>(
+  React.forwardRef<HTMLDivElement, Props>(
     (
       {
-        color,
         dragOverlay,
         dragging,
-        disabled,
-        fadeIn,
-        height,
-        index,
-        listeners,
-        onRemove,
-        renderItem,
-        sorting,
-        transition,
         transform,
+        transition,
+        listeners,
         value,
-        ...props
+        onRemove,
       },
       ref
     ) => {
       useEffect(() => {
-        if (!dragOverlay) {
-          return;
+        if (dragOverlay) {
+          document.body.style.cursor = "grabbing";
+          return () => {
+            document.body.style.cursor = "";
+          };
         }
-
-        document.body.style.cursor = "grabbing";
-
-        return () => {
-          document.body.style.cursor = "";
-        };
       }, [dragOverlay]);
 
-      return renderItem ? (
-        renderItem({
-          dragOverlay: Boolean(dragOverlay),
-          dragging: Boolean(dragging),
-          sorting: Boolean(sorting),
-          index,
-          listeners,
-          ref,
-          transform,
-          transition,
-          value,
-        })
-      ) : (
-        <li
+      return (
+        <div
           ref={ref}
           style={{
+            width: "100%",
+            height: "100px",
+            border: "solid 1px black",
             transform: transform
               ? `translate3d(${Math.round(transform.x)}px, ${Math.round(
                   transform.y
@@ -92,26 +54,12 @@ const Item = React.memo(
             transition: transition ?? undefined,
             opacity: dragOverlay ? 1 : dragging ? 0.5 : 1,
             zIndex: dragOverlay ? 999 : undefined,
-            listStyle: "none",
-            width: "100%",
-            height,
           }}
+          {...listeners}
         >
-          <div
-            style={{
-              width: "100%",
-              height: "100px",
-              border: "solid 1px black",
-            }}
-            data-cypress="draggable-item"
-            {...listeners}
-            {...props}
-            tabIndex={0}
-          >
-            {value}
-            <span>{onRemove ? <Remove onClick={onRemove} /> : null}</span>
-          </div>
-        </li>
+          {value}
+          {onRemove && <Remove onClick={onRemove} />}
+        </div>
       );
     }
   )

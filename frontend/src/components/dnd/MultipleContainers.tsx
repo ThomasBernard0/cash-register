@@ -32,12 +32,12 @@ import {
 import { multipleContainersCoordinateGetter } from "../../helpers/multipleContainersKeyboardCoordinates";
 import Item from "./Item";
 import DraggableSection from "../account/editMenu/DraggableSection";
-import Section from "./Section";
+import Section from "../account/editMenu/Section";
 import DraggableItem from "./DraggableItem";
 import { useSections } from "../../api/section";
 import type { Section as SectionType } from "../../types/section";
 import type { Item as ItemType } from "../../types/section";
-import { AddItemButton } from "./AddItemButton";
+import { AddItemButton } from "../account/editMenu/AddItemButton";
 
 export function MultipleSections() {
   const { sections, loading, error, reorderSections, setLocalOrder } =
@@ -194,7 +194,9 @@ export function MultipleSections() {
 
         return arrayMove(sections, activeIndex, overIndex);
       })();
-      setLocalOrder(newSections);
+      console.log("1");
+      console.log(newSections);
+      reorderSections(newSections);
       return;
     }
     const activeContainer = findElement(active.id);
@@ -230,14 +232,16 @@ export function MultipleSections() {
           }
           return { ...section };
         });
-        setLocalOrder(newSections);
+        console.log("2");
+        console.log(newSections);
+        reorderSections(newSections);
       }
     }
     setActiveId(null);
   };
 
   const renderSectionDragOverlay = (section: SectionType) => (
-    <Section title={section.title} style={{ height: "100%" }}>
+    <Section title={section.title}>
       {section.items.map((item) => (
         <Item key={item.id} value={item.label} />
       ))}
@@ -305,12 +309,11 @@ export function MultipleSections() {
                 items={section.items.map((item) => item.id)}
                 strategy={rectSortingStrategy}
               >
-                {section.items.map((item, index) => (
+                {section.items.map((item) => (
                   <DraggableItem
                     key={item.id}
                     label={item.label}
                     id={item.id}
-                    index={index}
                   />
                 ))}
                 <AddItemButton

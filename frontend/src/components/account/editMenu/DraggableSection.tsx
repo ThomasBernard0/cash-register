@@ -2,15 +2,15 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
-import Section from "../../dnd/Section";
+import Section from "./Section";
 
-interface Props {
+type Props = {
   id: UniqueIdentifier;
   title: string;
   items: UniqueIdentifier[];
   onRemove: () => void;
   children: React.ReactNode;
-}
+};
 
 const DraggableSection = ({ id, title, items, onRemove, children }: Props) => {
   const {
