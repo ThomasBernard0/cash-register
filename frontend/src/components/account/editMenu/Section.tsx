@@ -36,7 +36,15 @@ const Section = forwardRef<HTMLDivElement, Props>(
           >
             <Box fontWeight="bold">{title}</Box>
             <Box display="flex" alignItems="center" gap={1}>
-              {onRemove && <Remove onClick={onRemove} />}
+              <Remove
+                onClick={
+                  onRemove
+                    ? onRemove
+                    : () => {
+                        return;
+                      }
+                }
+              />
               <Handle {...handleProps} />
             </Box>
           </Box>
