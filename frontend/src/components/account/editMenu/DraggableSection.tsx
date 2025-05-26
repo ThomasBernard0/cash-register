@@ -2,22 +2,23 @@ import type { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
-import Section from "./Section";
-import type { SectionProps } from "./Section";
+import Section from "../../dnd/Section";
+
+interface DraggableSectionProps {
+  id: UniqueIdentifier;
+  title: string;
+  items: UniqueIdentifier[];
+  onRemove: () => void;
+  children: React.ReactNode;
+}
 
 const DraggableSection = ({
-  children,
-  disabled,
   id,
+  title,
   items,
-  style,
-  ...props
-}: SectionProps & {
-  disabled?: boolean;
-  id: UniqueIdentifier;
-  items: UniqueIdentifier[];
-  style?: React.CSSProperties;
-}) => {
+  onRemove,
+  children,
+}: DraggableSectionProps) => {
   const {
     active,
     attributes,
@@ -41,9 +42,10 @@ const DraggableSection = ({
 
   return (
     <Section
-      ref={disabled ? undefined : setNodeRef}
+      ref={setNodeRef}
+      title={title}
+      onRemove={onRemove}
       style={{
-        ...style,
         transition,
         transform: CSS.Translate.toString(transform),
         opacity: isDragging ? 0.5 : undefined,
@@ -53,7 +55,6 @@ const DraggableSection = ({
         ...attributes,
         ...listeners,
       }}
-      {...props}
     >
       {children}
     </Section>

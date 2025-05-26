@@ -1,45 +1,58 @@
 import React, { forwardRef } from "react";
-import Handle from "../account/edit/Handle";
-import Remove from "../account/edit/Remove";
+import { Box, Typography, IconButton, Paper, Grid } from "@mui/material";
+import Handle from "../account/editMenu/Handle";
+import Remove from "../account/editMenu/Remove";
 
 export interface SectionProps {
+  title?: string;
+  onRemove?(): void;
   children: React.ReactNode;
-  label?: string;
   style?: React.CSSProperties;
   hover?: boolean;
   handleProps?: React.HTMLAttributes<any>;
-  shadow?: boolean;
-  placeholder?: boolean;
-  unstyled?: boolean;
-  onRemove?(): void;
 }
 
 const Section = forwardRef<HTMLDivElement, SectionProps>(
-  ({ children, handleProps, label, onRemove, style }, ref) => {
+  ({ title, onRemove, children, handleProps, style }, ref) => {
     return (
-      <div
+      <Paper
         ref={ref}
-        style={{ ...style, height: "300px", border: "solid 2px black" }}
+        elevation={3}
+        sx={{
+          width: "100%",
+          height: "auto",
+          boxSizing: "border-box",
+          p: 2,
+          border: "2px solid black",
+          ...style,
+        }}
       >
-        {label && (
-          <div style={{ display: "flex" }}>
-            <div style={{ flexGrow: 1 }}> {label}</div>
-            <div style={{ display: "flex" }}>
+        {title && (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={2}
+          >
+            <Box fontWeight="bold">{title}</Box>
+            <Box display="flex" alignItems="center" gap={1}>
               {onRemove && <Remove onClick={onRemove} />}
               <Handle {...handleProps} />
-            </div>
-          </div>
+            </Box>
+          </Box>
         )}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(4, minmax(0, 1fr))`,
-          }}
+
+        <Box
+          display="grid"
+          gridTemplateColumns="repeat(4,calc(((100% - 3 * 17px) / 4)))"
+          gap="16px"
+          sx={{ boxSizing: "border-box" }}
         >
           {children}
-        </div>
-      </div>
+        </Box>
+      </Paper>
     );
   }
 );
+
 export default Section;

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
 
-import Remove from "../account/edit/Remove";
+import Remove from "../account/editMenu/Remove";
 
 export interface Props {
   dragOverlay?: boolean;
@@ -93,12 +93,13 @@ const Item = React.memo(
             opacity: dragOverlay ? 1 : dragging ? 0.5 : 1,
             zIndex: dragOverlay ? 999 : undefined,
             listStyle: "none",
+            width: "100%",
             height,
           }}
         >
           <div
             style={{
-              width: "200px",
+              width: "100%",
               height: "100px",
               border: "solid 1px black",
             }}

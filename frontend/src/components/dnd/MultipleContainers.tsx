@@ -31,7 +31,7 @@ import {
 } from "@dnd-kit/sortable";
 import { multipleContainersCoordinateGetter } from "../../helpers/multipleContainersKeyboardCoordinates";
 import Item from "./Item";
-import DraggableSection from "./DraggableSection";
+import DraggableSection from "../account/editMenu/DraggableSection";
 import Section from "./Section";
 import DraggableItem from "./DraggableItem";
 import { useSections } from "../../api/section";
@@ -237,7 +237,7 @@ export function MultipleSections() {
   };
 
   const renderSectionDragOverlay = (section: SectionType) => (
-    <Section label={section.title} shadow style={{ height: "100%" }}>
+    <Section title={section.title} style={{ height: "100%" }}>
       {section.items.map((item) => (
         <Item key={item.id} value={item.label} />
       ))}
@@ -280,9 +280,10 @@ export function MultipleSections() {
     >
       <div
         style={{
-          display: "inline-grid",
+          display: "grid",
           boxSizing: "border-box",
           padding: 20,
+          width: "100%",
           gridAutoFlow: "row",
         }}
       >
@@ -294,7 +295,7 @@ export function MultipleSections() {
             <DraggableSection
               key={section.id}
               id={section.id}
-              label={section.title}
+              title={section.title}
               items={section.items.map((item) => item.id)}
               onRemove={() => {
                 return;
