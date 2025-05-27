@@ -2,12 +2,12 @@ import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import type { Item } from "../../../types/section";
 
-type ItemCardProps = {
+type Props = {
   item: Item;
   color: string;
 };
 
-const ItemCard: React.FC<ItemCardProps> = ({ item, color }) => {
+const ItemCard: React.FC<Props> = ({ item, color }) => {
   return (
     <Card
       sx={{

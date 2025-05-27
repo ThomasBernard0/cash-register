@@ -3,11 +3,11 @@ import { Box, Typography, Paper, Grid } from "@mui/material";
 import ItemCard from "./ItemCard";
 import { type Section } from "../../../types/section";
 
-type SectionBlockProps = {
+type Props = {
   section: Section;
 };
 
-const SectionBlock: React.FC<SectionBlockProps> = ({ section }) => {
+const SectionBlock: React.FC<Props> = ({ section }) => {
   return (
     <Box mb={4}>
       <Typography variant="h6" gutterBottom>

@@ -13,3 +13,17 @@ export type Item = {
   order: number;
   sectionId: string;
 };
+
+export type CartItem = {
+  item: Item;
+  quantity: number;
+};
+
+export type Cart = {
+  [sectionId: string]: {
+    sectionLabel: string;
+    items: {
+      [itemId: string]: CartItem;
+    };
+  };
+};
