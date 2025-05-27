@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, CardContent, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import type { Item } from "../../../types/section";
 import RemoveIcon from "@mui/icons-material/Remove";
 
@@ -17,7 +17,6 @@ const ItemCard: React.FC<Props> = ({ item, color }) => {
         display: "flex",
         borderRadius: 2,
         boxShadow: 2,
-        cursor: "pointer",
       }}
     >
       <CardContent
@@ -27,11 +26,11 @@ const ItemCard: React.FC<Props> = ({ item, color }) => {
           flexBasis: "75%",
           textAlign: "left",
           backgroundColor: color,
+          cursor: "pointer",
         }}
       >
         <Typography>{item.label}</Typography>
       </CardContent>
-
       <Button
         disabled
         sx={{
@@ -42,6 +41,7 @@ const ItemCard: React.FC<Props> = ({ item, color }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          cursor: "pointer",
         }}
       >
         <RemoveIcon sx={{ fontSize: 18, color: "black" }} />
