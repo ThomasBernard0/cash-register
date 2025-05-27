@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { type Cart } from "../../../types/section";
+import { type Cart } from "../../../types/command";
 
 const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
   return (

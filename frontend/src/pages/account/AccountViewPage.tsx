@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import SectionGrid from "../../components/account/viewMenu/SectionGrid";
 import { useSections } from "../../api/section";
 import { Box, Button, CircularProgress } from "@mui/material";
-import type { Cart, Item } from "../../types/section";
+import type { Item } from "../../types/section";
+import type { Cart } from "../../types/command";
 import CartRecap from "../../components/account/viewMenu/Recap";
 import AccountNavbar from "../../components/account/AccountNavbar";
 

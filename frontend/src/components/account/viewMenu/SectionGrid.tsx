@@ -1,6 +1,7 @@
 import React from "react";
 import SectionBlock from "./SectionBlock";
-import { type Cart, type Item, type Section } from "../../../types/section";
+import { type Item, type Section } from "../../../types/section";
+import type { Cart } from "../../../types/command";
 import { Box } from "@mui/material";
 
 type Props = {

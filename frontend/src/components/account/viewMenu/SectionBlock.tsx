@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Typography, Paper, Grid } from "@mui/material";
 import ItemCard from "./ItemCard";
-import { type CartItem, type Item, type Section } from "../../../types/section";
+import { type Item, type Section } from "../../../types/section";
+import type { CartItem } from "../../../types/command";
 
 type Props = {
   section: Section;

@@ -13,17 +13,3 @@ export type Item = {
   order: number;
   sectionId: string;
 };
-
-export type CartItem = {
-  item: Item;
-  quantity: number;
-};
-
-export type Cart = {
-  [sectionId: string]: {
-    sectionTitle: string;
-    items: {
-      [itemId: string]: CartItem;
-    };
-  };
-};
