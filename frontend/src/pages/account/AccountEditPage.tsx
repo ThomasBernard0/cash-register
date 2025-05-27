@@ -342,8 +342,9 @@ const AccountEditPage: React.FC = () => {
                   {section.items.map((item) => (
                     <DraggableItem
                       key={item.id}
-                      item={item}
                       id={item.id}
+                      item={item}
+                      backgroundColor={section.color}
                       onEdit={() => {
                         setEditingItem(item);
                         setIsEditItemModalOpen(true);

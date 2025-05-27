@@ -11,7 +11,7 @@ const SectionGrid: React.FC<SectionGridProps> = ({ sections }) => {
   return (
     <Box sx={{ p: 2 }}>
       {sections.map((section) => (
-        <SectionBlock key={section.id} id={section.id} section={section} />
+        <SectionBlock key={section.id} section={section} />
       ))}
     </Box>
   );

@@ -4,11 +4,10 @@ import ItemCard from "./ItemCard";
 import { type Section } from "../../../types/section";
 
 type SectionBlockProps = {
-  id: string;
   section: Section;
 };
 
-const SectionBlock: React.FC<SectionBlockProps> = ({ id, section }) => {
+const SectionBlock: React.FC<SectionBlockProps> = ({ section }) => {
   return (
     <Box mb={4}>
       <Typography variant="h6" gutterBottom>

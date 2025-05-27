@@ -26,7 +26,6 @@ const Section = forwardRef<HTMLDivElement, Props>(
           boxSizing: "border-box",
           p: 2,
           border: "2px solid black",
-          backgroundColor: section?.color,
           ...style,
         }}
       >

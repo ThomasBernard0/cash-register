@@ -8,6 +8,7 @@ import { type Item as ItemType } from "../../../types/section";
 
 type Props = {
   item: ItemType;
+  backgroundColor?: string;
   onEdit?(): void;
   onDelete?(): void;
   dragOverlay?: boolean;
@@ -22,6 +23,7 @@ const Item = React.memo(
     (
       {
         item,
+        backgroundColor,
         onEdit,
         onDelete,
         dragOverlay,
@@ -61,6 +63,7 @@ const Item = React.memo(
               transition: transition ?? undefined,
               opacity: dragOverlay ? 1 : dragging ? 0.5 : 1,
               zIndex: dragOverlay ? 999 : "auto",
+              backgroundColor: backgroundColor,
             }}
             {...listeners}
           >
