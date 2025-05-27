@@ -1,6 +1,7 @@
 import React from "react";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Button, Card, CardContent, Typography } from "@mui/material";
 import type { Item } from "../../../types/section";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 type Props = {
   item: Item;
@@ -14,19 +15,37 @@ const ItemCard: React.FC<Props> = ({ item, color }) => {
         minHeight: 100,
         maxHeight: 180,
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        p: 2,
         borderRadius: 2,
         boxShadow: 2,
-        backgroundColor: color,
-        textAlign: "center",
         cursor: "pointer",
       }}
     >
-      <CardContent sx={{ textAlign: "center" }}>
-        <Typography noWrap>{item.label}</Typography>
+      <CardContent
+        sx={{
+          minHeight: 100,
+          maxHeight: 180,
+          flexBasis: "75%",
+          textAlign: "left",
+          backgroundColor: color,
+        }}
+      >
+        <Typography>{item.label}</Typography>
       </CardContent>
+
+      <Button
+        disabled
+        sx={{
+          flexBasis: "25%",
+          padding: 0,
+          minWidth: 0,
+          backgroundColor: "transparent",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <RemoveIcon sx={{ fontSize: 18, color: "black" }} />
+      </Button>
     </Card>
   );
 };
