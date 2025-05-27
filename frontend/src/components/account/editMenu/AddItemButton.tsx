@@ -15,7 +15,7 @@ const AddItemButton = ({ id, onClick }: any) => {
         height: "100px",
       }}
     >
-      <AddIcon />
+      <AddIcon sx={{ color: "black" }} />
     </Button>
   );
 };

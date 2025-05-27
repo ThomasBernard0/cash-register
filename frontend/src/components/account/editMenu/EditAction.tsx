@@ -22,10 +22,10 @@ const EditAction: React.FC<Props> = ({
   return (
     <Box sx={{ display: "flex", ...(absolute ? absoluteStyle : {}) }}>
       <Button onClick={onEdit}>
-        <EditIcon />
+        <EditIcon sx={{ color: "black" }} />
       </Button>
       <Button onClick={onDelete}>
-        <ClearIcon />
+        <ClearIcon sx={{ color: "black" }} />
       </Button>
     </Box>
   );

@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography, TextField, Button, Grid } from "@mui/material";
+import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import { type Section } from "../../../types/section";
-
-const COLORS = [
-  "#FFFFFF",
-  "#F87171",
-  "#FBBF24",
-  "#34D399",
-  "#60A5FA",
-  "#A78BFA",
-  "#F472B6",
-];
+import { ChromePicker } from "react-color";
 
 type Props = {
   open: boolean;
@@ -26,7 +17,7 @@ const EditSectionModal: React.FC<Props> = ({
   onEdit,
 }) => {
   const [title, setTitle] = useState<string>("");
-  const [color, setColor] = useState<string>(COLORS[0]);
+  const [color, setColor] = useState<string>("");
 
   useEffect(() => {
     if (section) {
@@ -67,6 +58,7 @@ const EditSectionModal: React.FC<Props> = ({
           height: "50%",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
         }}
       >
         <Typography variant="h6" mb={2}>
@@ -83,24 +75,13 @@ const EditSectionModal: React.FC<Props> = ({
           <Typography variant="body2" mb={1}>
             Couleur
           </Typography>
-          <Grid container spacing={1} sx={{ mb: 2 }}>
-            {COLORS.map((c) => (
-              <Grid key={c}>
-                <Box
-                  sx={{
-                    width: 30,
-                    height: 30,
-                    bgcolor: c,
-                    borderRadius: "50%",
-                    border:
-                      color === c ? "2px solid black" : "2px solid transparent",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setColor(c)}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <ChromePicker
+            color={color}
+            onChangeComplete={(colorResult: { hex: string }) =>
+              setColor(colorResult.hex)
+            }
+            disableAlpha
+          />
         </>
         <Box sx={{ mt: "auto", pt: 2 }}>
           <Button

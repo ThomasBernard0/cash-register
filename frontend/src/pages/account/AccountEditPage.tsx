@@ -370,7 +370,7 @@ const AccountEditPage: React.FC = () => {
                   border: "dashed 1px black",
                 }}
               >
-                <AddIcon />
+                <AddIcon sx={{ color: "black" }} />
               </Button>
             }
           </SortableContext>
