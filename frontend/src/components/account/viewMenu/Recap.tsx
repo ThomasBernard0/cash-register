@@ -4,7 +4,7 @@ import { type Cart } from "../../../types/section";
 
 const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
   return (
-    <Box>
+    <Box sx={{ paddingRight: 1 }}>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold" }}>
         Panier
       </Typography>

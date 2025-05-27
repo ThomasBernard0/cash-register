@@ -1,54 +1,13 @@
 import React, { useState } from "react";
 import SectionGrid from "../../components/account/viewMenu/SectionGrid";
 import { useSections } from "../../api/section";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import type { Cart, Item } from "../../types/section";
 import CartRecap from "../../components/account/viewMenu/Recap";
 
 const AccountViewPage: React.FC = () => {
   const { sections, loading, error } = useSections();
-  const [cart, setCart] = useState<Cart>(() => ({
-    "section-001": {
-      sectionLabel: "Boissons",
-      items: {
-        "item-a": {
-          item: {
-            id: "item-a",
-            label: "Coca Cola",
-            priceInCent: 250,
-            sectionId: "section-001",
-            order: 1,
-          },
-          quantity: 2,
-        },
-        "item-b": {
-          item: {
-            id: "item-b",
-            label: "Fanta",
-            priceInCent: 230,
-            sectionId: "section-001",
-            order: 2,
-          },
-          quantity: 1,
-        },
-      },
-    },
-    "section-002": {
-      sectionLabel: "Snacks",
-      items: {
-        "item-c": {
-          item: {
-            id: "item-c",
-            label: "Chips",
-            priceInCent: 180,
-            sectionId: "section-002",
-            order: 1,
-          },
-          quantity: 3,
-        },
-      },
-    },
-  }));
+  const [cart, setCart] = useState<Cart>({});
 
   const addToCart = (sectionId: string, sectionLabel: string, item: Item) => {
     setCart((prev) => {
@@ -117,16 +76,29 @@ const AccountViewPage: React.FC = () => {
       </Box>
       <Box
         sx={{
-          width: "20%",
-          p: 2,
-          bgcolor: "#e0e0e0",
           position: "sticky",
           top: 0,
           height: "100vh",
+          width: "20%",
+          bgcolor: "#e0e0e0",
+          p: 2,
           overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <CartRecap cart={cart} />
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: "auto",
+            mb: 2,
+          }}
+        >
+          <CartRecap cart={cart} />
+        </Box>
+        <Button variant="contained" fullWidth>
+          Valider
+        </Button>
       </Box>
     </Box>
   );
