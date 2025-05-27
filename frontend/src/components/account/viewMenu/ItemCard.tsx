@@ -39,10 +39,14 @@ const ItemCard: React.FC<Props> = ({
           textAlign: "left",
           backgroundColor: backgroundColor,
           cursor: "pointer",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
         onClick={() => addToCart(item.sectionId, sectionTitle, item)}
       >
         <Typography>{item.label}</Typography>
+        <Typography>{(item.priceInCent / 100).toFixed(2)}€</Typography>
       </CardContent>
       <Button
         sx={{
