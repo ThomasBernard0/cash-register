@@ -11,7 +11,7 @@ const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
       {Object.entries(cart).map(([sectionId, section]) => (
         <Box key={sectionId} mb={2}>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            {section.sectionLabel}
+            {section.sectionTitle}
           </Typography>
           {Object.values(section.items).map(({ item, quantity }) => (
             <Box

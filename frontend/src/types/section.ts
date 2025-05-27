@@ -21,7 +21,7 @@ export type CartItem = {
 
 export type Cart = {
   [sectionId: string]: {
-    sectionLabel: string;
+    sectionTitle: string;
     items: {
       [itemId: string]: CartItem;
     };
