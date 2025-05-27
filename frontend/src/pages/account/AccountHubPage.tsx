@@ -31,6 +31,7 @@ const AccountHubPage: React.FC = () => {
           <Button
             variant="contained"
             size="large"
+            sx={{ textTransform: "none" }}
             onClick={() => navigate("/account/view")}
           >
             Voir le menu
@@ -39,6 +40,7 @@ const AccountHubPage: React.FC = () => {
           <Button
             variant="contained"
             size="large"
+            sx={{ textTransform: "none" }}
             onClick={() => navigate("/account/edit")}
           >
             Modifier le menu
@@ -47,6 +49,7 @@ const AccountHubPage: React.FC = () => {
           <Button
             variant="contained"
             size="large"
+            sx={{ textTransform: "none" }}
             onClick={() => navigate("/account/session")}
           >
             Modifier la session

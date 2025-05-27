@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { AppBar, Toolbar, Button } from "@mui/material";
+import { AppBar, Toolbar, Button, Typography } from "@mui/material";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const AccountNavbar: React.FC = () => {
   const navigate = useNavigate();
@@ -7,8 +8,14 @@ const AccountNavbar: React.FC = () => {
   return (
     <AppBar position="static" color="default" elevation={1}>
       <Toolbar>
-        <Button onClick={() => navigate("/account")} color="primary">
-          ← Retour au Hub
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ textTransform: "none" }}
+          onClick={() => navigate("/account")}
+        >
+          <ArrowBackIosIcon />
+          <Typography>Retour</Typography>
         </Button>
       </Toolbar>
     </AppBar>
