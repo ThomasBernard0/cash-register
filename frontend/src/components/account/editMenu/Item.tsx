@@ -64,9 +64,21 @@ const Item = React.memo(
             }}
             {...listeners}
           >
-            <Box sx={{ display: "flex", p: 2 }}>
-              <Typography>{item.label}</Typography>
-              <Typography>{item.priceInCent / 100}</Typography>
+            <Box
+              sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                p: 2,
+              }}
+            >
+              <Box>
+                <Typography>Nom : {item.label}</Typography>
+              </Box>
+              <Box>
+                <Typography>Prix : {item.priceInCent / 100}</Typography>
+              </Box>
             </Box>
           </Box>
           <EditAction

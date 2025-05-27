@@ -259,7 +259,7 @@ const AccountEditPage: React.FC = () => {
   };
 
   const renderSectionDragOverlay = (section: SectionType) => (
-    <Section title={section.title}>
+    <Section section={section}>
       {section.items.map((item) => (
         <Item key={item.id} item={item} />
       ))}
@@ -327,7 +327,7 @@ const AccountEditPage: React.FC = () => {
               <DraggableSection
                 key={section.id}
                 id={section.id}
-                title={section.title}
+                section={section}
                 items={section.items.map((item) => item.id)}
                 onEdit={() => {
                   setEditingSection(section);

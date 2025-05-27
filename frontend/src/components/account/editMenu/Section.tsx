@@ -2,9 +2,10 @@ import React, { forwardRef } from "react";
 import { Box, Paper } from "@mui/material";
 import Handle from "./Handle";
 import EditAction from "./EditAction";
+import { type Section as SectionType } from "../../../types/section";
 
 type Props = {
-  title?: string;
+  section?: SectionType;
   onEdit?(): void;
   onDelete?(): void;
   children: React.ReactNode;
@@ -14,7 +15,7 @@ type Props = {
 };
 
 const Section = forwardRef<HTMLDivElement, Props>(
-  ({ title, onEdit, onDelete, children, handleProps, style }, ref) => {
+  ({ section, onEdit, onDelete, children, handleProps, style }, ref) => {
     return (
       <Paper
         ref={ref}
@@ -25,17 +26,18 @@ const Section = forwardRef<HTMLDivElement, Props>(
           boxSizing: "border-box",
           p: 2,
           border: "2px solid black",
+          backgroundColor: section?.color,
           ...style,
         }}
       >
-        {title && (
+        {section && (
           <Box
             display="flex"
             alignItems="center"
             justifyContent="space-between"
             mb={2}
           >
-            <Box fontWeight="bold">{title}</Box>
+            <Box fontWeight="bold">{section.title}</Box>
             <Box display="flex" alignItems="center" gap={1}>
               <EditAction
                 onEdit={onEdit ? onEdit : () => null}

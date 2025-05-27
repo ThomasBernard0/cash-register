@@ -3,10 +3,11 @@ import { useSortable } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
 import Section from "./Section";
+import { type Section as SectionType } from "../../../types/section";
 
 type Props = {
   id: UniqueIdentifier;
-  title: string;
+  section?: SectionType;
   items: UniqueIdentifier[];
   onEdit: () => void;
   onDelete: () => void;
@@ -15,7 +16,7 @@ type Props = {
 
 const DraggableSection = ({
   id,
-  title,
+  section,
   items,
   onEdit,
   onDelete,
@@ -45,7 +46,7 @@ const DraggableSection = ({
   return (
     <Section
       ref={setNodeRef}
-      title={title}
+      section={section}
       onEdit={onEdit}
       onDelete={onDelete}
       style={{
