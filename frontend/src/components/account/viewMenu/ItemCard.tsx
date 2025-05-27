@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import type { Item } from "../../../types/section";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { getDarkerColor } from "../../../helpers/getDarkerColor";
 
 type Props = {
   item: Item;
@@ -24,7 +25,7 @@ const ItemCard: React.FC<Props> = ({ item, backgroundColor, isInCart }) => {
         sx={{
           minHeight: 100,
           maxHeight: 180,
-          flexBasis: "75%",
+          flexBasis: isInCart ? "75%" : "100%",
           textAlign: "left",
           backgroundColor: backgroundColor,
           cursor: "pointer",
@@ -32,22 +33,23 @@ const ItemCard: React.FC<Props> = ({ item, backgroundColor, isInCart }) => {
       >
         <Typography>{item.label}</Typography>
       </CardContent>
-      <Button
-        disabled
-        sx={{
-          flexBasis: "25%",
-          padding: 0,
-          minWidth: 0,
-          borderRadius: 0,
-          backgroundColor: isInCart ? "red" : "grey",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          cursor: "pointer",
-        }}
-      >
-        <RemoveIcon sx={{ fontSize: 18, color: "black" }} />
-      </Button>
+      {isInCart && (
+        <Button
+          sx={{
+            flexBasis: "25%",
+            padding: 0,
+            minWidth: 0,
+            borderRadius: 0,
+            backgroundColor: getDarkerColor(backgroundColor),
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <RemoveIcon sx={{ fontSize: 18, color: "black" }} />
+        </Button>
+      )}
     </Card>
   );
 };
