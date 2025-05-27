@@ -11,6 +11,7 @@ import {
   Paper,
   Button,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { useAllAccounts } from "../../api/account";
 import CreateAccountModal from "../../components/superadmin/CreateAccountModal";
@@ -23,7 +24,18 @@ const AdminDashboard: React.FC = () => {
   const { accounts, loading, error, refetch } = useAllAccounts();
 
   if (loading) {
-    return <div>Loading accounts...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {

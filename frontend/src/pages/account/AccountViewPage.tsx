@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SectionGrid from "../../components/account/viewMenu/SectionGrid";
 import { useSections } from "../../api/section";
-import { Box, Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import type { Cart, Item } from "../../types/section";
 import CartRecap from "../../components/account/viewMenu/Recap";
 import AccountNavbar from "../../components/account/AccountNavbar";
@@ -58,7 +58,18 @@ const AccountViewPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading sections...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {

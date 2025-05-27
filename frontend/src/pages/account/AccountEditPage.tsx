@@ -30,7 +30,7 @@ import {
 import { multipleContainersCoordinateGetter } from "../../helpers/multipleContainersKeyboardCoordinates";
 import { useSections } from "../../api/section";
 
-import { Box, Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DraggableSection from "../../components/account/editMenu/DraggableSection";
 import Section from "../../components/account/editMenu/Section";
@@ -288,7 +288,18 @@ const AccountEditPage: React.FC = () => {
   }, [sections]);
 
   if (loading) {
-    return <div>Loading sections...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
