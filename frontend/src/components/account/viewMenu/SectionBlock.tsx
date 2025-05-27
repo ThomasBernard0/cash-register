@@ -1,14 +1,21 @@
 import React from "react";
 import { Box, Typography, Paper, Grid } from "@mui/material";
 import ItemCard from "./ItemCard";
-import { type CartItem, type Section } from "../../../types/section";
+import { type CartItem, type Item, type Section } from "../../../types/section";
 
 type Props = {
   section: Section;
   cartItems: CartItem[];
+  addToCart: (sectionId: string, sectionTitle: string, item: Item) => void;
+  removeFromCart: (sectionId: string, itemId: string) => void;
 };
 
-const SectionBlock: React.FC<Props> = ({ section, cartItems }) => {
+const SectionBlock: React.FC<Props> = ({
+  section,
+  cartItems,
+  addToCart,
+  removeFromCart,
+}) => {
   return (
     <Box mb={4}>
       <Typography variant="h6" gutterBottom>
@@ -21,6 +28,9 @@ const SectionBlock: React.FC<Props> = ({ section, cartItems }) => {
               item={item}
               backgroundColor={section.color}
               isInCart={cartItems.some((ci) => ci.item.id === item.id)}
+              addToCart={addToCart}
+              sectionTitle={section.title}
+              removeFromCart={removeFromCart}
             />
           </Grid>
         ))}

@@ -10,9 +10,9 @@ const AccountViewPage: React.FC = () => {
   const { sections, loading, error } = useSections();
   const [cart, setCart] = useState<Cart>({});
 
-  const addToCart = (sectionId: string, sectionLabel: string, item: Item) => {
+  const addToCart = (sectionId: string, sectionTitle: string, item: Item) => {
     setCart((prev) => {
-      const section = prev[sectionId] || { sectionLabel, items: {} };
+      const section = prev[sectionId] || { sectionTitle, items: {} };
       const existingItem = section.items[item.id];
       const updatedItem = {
         item,
@@ -86,7 +86,12 @@ const AccountViewPage: React.FC = () => {
             p: 2,
           }}
         >
-          <SectionGrid sections={sections} cart={cart} />
+          <SectionGrid
+            sections={sections}
+            cart={cart}
+            addToCart={addToCart}
+            removeFromCart={removeFromCart}
+          />
         </Box>
         <Box
           sx={{

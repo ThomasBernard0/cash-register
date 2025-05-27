@@ -8,9 +8,19 @@ type Props = {
   item: Item;
   backgroundColor: string;
   isInCart: boolean;
+  addToCart: (sectionId: string, sectionTitle: string, item: Item) => void;
+  sectionTitle: string;
+  removeFromCart: (sectionId: string, itemId: string) => void;
 };
 
-const ItemCard: React.FC<Props> = ({ item, backgroundColor, isInCart }) => {
+const ItemCard: React.FC<Props> = ({
+  item,
+  backgroundColor,
+  isInCart,
+  addToCart,
+  sectionTitle,
+  removeFromCart,
+}) => {
   return (
     <Card
       sx={{
@@ -30,6 +40,7 @@ const ItemCard: React.FC<Props> = ({ item, backgroundColor, isInCart }) => {
           backgroundColor: backgroundColor,
           cursor: "pointer",
         }}
+        onClick={() => addToCart(item.sectionId, sectionTitle, item)}
       >
         <Typography>{item.label}</Typography>
       </CardContent>
@@ -46,6 +57,7 @@ const ItemCard: React.FC<Props> = ({ item, backgroundColor, isInCart }) => {
             alignItems: "center",
             cursor: "pointer",
           }}
+          onClick={() => removeFromCart(item.sectionId, item.id)}
         >
           <RemoveIcon sx={{ fontSize: 18, color: "black" }} />
         </Button>
