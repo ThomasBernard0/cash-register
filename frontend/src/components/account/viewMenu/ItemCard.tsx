@@ -1,12 +1,13 @@
 import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
+import type { Item } from "../../../types/section";
 
 type ItemCardProps = {
-  id: string;
-  label: string;
+  item: Item;
+  color: string;
 };
 
-const ItemCard: React.FC<ItemCardProps> = ({ label }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ item, color }) => {
   return (
     <Card
       sx={{
@@ -18,12 +19,13 @@ const ItemCard: React.FC<ItemCardProps> = ({ label }) => {
         p: 2,
         borderRadius: 2,
         boxShadow: 2,
+        backgroundColor: color,
         textAlign: "center",
         cursor: "pointer",
       }}
     >
       <CardContent sx={{ textAlign: "center" }}>
-        <Typography noWrap>{label}</Typography>
+        <Typography noWrap>{item.label}</Typography>
       </CardContent>
     </Card>
   );
