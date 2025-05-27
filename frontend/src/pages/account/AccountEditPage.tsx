@@ -361,18 +361,15 @@ const AccountEditPage: React.FC = () => {
                 </SortableContext>
               </DraggableSection>
             ))}
-
-            {
-              <Button
-                onClick={createSection}
-                style={{
-                  cursor: "pointer",
-                  border: "dashed 1px black",
-                }}
-              >
-                <AddIcon sx={{ color: "black" }} />
-              </Button>
-            }
+            <Button
+              onClick={createSection}
+              style={{
+                cursor: "pointer",
+                border: "dashed 1px black",
+              }}
+            >
+              <AddIcon sx={{ color: "black" }} />
+            </Button>
           </SortableContext>
         </Box>
         {createPortal(
