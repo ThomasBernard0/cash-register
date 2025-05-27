@@ -80,7 +80,9 @@ const Item = React.memo(
                 <Typography>Nom : {item.label}</Typography>
               </Box>
               <Box>
-                <Typography>Prix : {item.priceInCent / 100} €</Typography>
+                <Typography>
+                  Prix : {(item.priceInCent / 100).toFixed(2)} €
+                </Typography>
               </Box>
             </Box>
           </Box>
