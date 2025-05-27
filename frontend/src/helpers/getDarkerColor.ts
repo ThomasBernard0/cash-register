@@ -1,4 +1,4 @@
-export const getDarkerColor = (hexColor: string, facteur = 0.7) => {
+export const getDarkerColor = (hexColor: string, facteur = 0.8) => {
   hexColor = hexColor.replace(/^#/, "");
 
   const r = parseInt(hexColor.substring(0, 2), 16);

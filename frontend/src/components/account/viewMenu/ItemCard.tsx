@@ -7,7 +7,7 @@ import { getDarkerColor } from "../../../helpers/getDarkerColor";
 type Props = {
   item: Item;
   backgroundColor: string;
-  isInCart: boolean;
+  count: number;
   addToCart: (sectionId: string, sectionTitle: string, item: Item) => void;
   sectionTitle: string;
   removeFromCart: (sectionId: string, itemId: string) => void;
@@ -16,7 +16,7 @@ type Props = {
 const ItemCard: React.FC<Props> = ({
   item,
   backgroundColor,
-  isInCart,
+  count,
   addToCart,
   sectionTitle,
   removeFromCart,
@@ -35,7 +35,7 @@ const ItemCard: React.FC<Props> = ({
         sx={{
           minHeight: 100,
           maxHeight: 180,
-          flexBasis: isInCart ? "75%" : "100%",
+          flexBasis: "75%",
           textAlign: "left",
           backgroundColor: backgroundColor,
           cursor: "pointer",
@@ -44,24 +44,25 @@ const ItemCard: React.FC<Props> = ({
       >
         <Typography>{item.label}</Typography>
       </CardContent>
-      {isInCart && (
-        <Button
-          sx={{
-            flexBasis: "25%",
-            padding: 0,
-            minWidth: 0,
-            borderRadius: 0,
-            backgroundColor: getDarkerColor(backgroundColor),
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-          }}
-          onClick={() => removeFromCart(item.sectionId, item.id)}
-        >
-          <RemoveIcon sx={{ fontSize: 18, color: "black" }} />
-        </Button>
-      )}
+      <Button
+        sx={{
+          flexBasis: "25%",
+          padding: 0,
+          minWidth: 0,
+          borderRadius: 0,
+          backgroundColor: getDarkerColor(backgroundColor),
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-around",
+          alignItems: "center",
+          cursor: "pointer",
+          color: "black",
+        }}
+        onClick={() => removeFromCart(item.sectionId, item.id)}
+      >
+        <Typography>{count}</Typography>
+        <RemoveIcon sx={{ fontSize: 18 }} />
+      </Button>
     </Card>
   );
 };

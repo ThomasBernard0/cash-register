@@ -27,7 +27,9 @@ const SectionBlock: React.FC<Props> = ({
             <ItemCard
               item={item}
               backgroundColor={section.color}
-              isInCart={cartItems.some((ci) => ci.item.id === item.id)}
+              count={
+                cartItems.find((ci) => ci.item.id === item.id)?.quantity || 0
+              }
               addToCart={addToCart}
               sectionTitle={section.title}
               removeFromCart={removeFromCart}
