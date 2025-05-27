@@ -261,7 +261,7 @@ const AccountEditPage: React.FC = () => {
   const renderSectionDragOverlay = (section: SectionType) => (
     <Section section={section}>
       {section.items.map((item) => (
-        <Item key={item.id} item={item} />
+        <Item key={item.id} item={item} backgroundColor={section.color} />
       ))}
     </Section>
   );
