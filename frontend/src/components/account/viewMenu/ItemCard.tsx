@@ -1,14 +1,15 @@
 import React from "react";
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { Button, Card, CardContent, Typography } from "@mui/material";
 import type { Item } from "../../../types/section";
 import RemoveIcon from "@mui/icons-material/Remove";
 
 type Props = {
   item: Item;
-  color: string;
+  backgroundColor: string;
+  isInCart: boolean;
 };
 
-const ItemCard: React.FC<Props> = ({ item, color }) => {
+const ItemCard: React.FC<Props> = ({ item, backgroundColor, isInCart }) => {
   return (
     <Card
       sx={{
@@ -25,7 +26,7 @@ const ItemCard: React.FC<Props> = ({ item, color }) => {
           maxHeight: 180,
           flexBasis: "75%",
           textAlign: "left",
-          backgroundColor: color,
+          backgroundColor: backgroundColor,
           cursor: "pointer",
         }}
       >
@@ -37,7 +38,8 @@ const ItemCard: React.FC<Props> = ({ item, color }) => {
           flexBasis: "25%",
           padding: 0,
           minWidth: 0,
-          backgroundColor: "transparent",
+          borderRadius: 0,
+          backgroundColor: isInCart ? "red" : "grey",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",

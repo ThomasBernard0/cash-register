@@ -7,7 +7,23 @@ import CartRecap from "../../components/account/viewMenu/Recap";
 
 const AccountViewPage: React.FC = () => {
   const { sections, loading, error } = useSections();
-  const [cart, setCart] = useState<Cart>({});
+  const [cart, setCart] = useState<Cart>({
+    "04bca5fe-8f27-420e-af4d-8619139b6cd1": {
+      sectionLabel: "Nom de la section",
+      items: {
+        "e49abb2e-855b-4a04-8d1e-4bd267d87b4b": {
+          item: {
+            id: "e49abb2e-855b-4a04-8d1e-4bd267d87b4b",
+            label: "Patate",
+            priceInCent: 500,
+            order: 1,
+            sectionId: "04bca5fe-8f27-420e-af4d-8619139b6cd1",
+          },
+          quantity: 1,
+        },
+      },
+    },
+  });
 
   const addToCart = (sectionId: string, sectionLabel: string, item: Item) => {
     setCart((prev) => {
@@ -72,7 +88,7 @@ const AccountViewPage: React.FC = () => {
           p: 2,
         }}
       >
-        <SectionGrid sections={sections} />
+        <SectionGrid sections={sections} cart={cart} />
       </Box>
       <Box
         sx={{

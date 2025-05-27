@@ -1,13 +1,14 @@
 import React from "react";
 import { Box, Typography, Paper, Grid } from "@mui/material";
 import ItemCard from "./ItemCard";
-import { type Section } from "../../../types/section";
+import { type CartItem, type Section } from "../../../types/section";
 
 type Props = {
   section: Section;
+  cartItems: CartItem[];
 };
 
-const SectionBlock: React.FC<Props> = ({ section }) => {
+const SectionBlock: React.FC<Props> = ({ section, cartItems }) => {
   return (
     <Box mb={4}>
       <Typography variant="h6" gutterBottom>
@@ -16,7 +17,11 @@ const SectionBlock: React.FC<Props> = ({ section }) => {
       <Grid container spacing={2}>
         {section.items.map((item) => (
           <Grid size={3} key={item.id}>
-            <ItemCard item={item} color={section.color} />
+            <ItemCard
+              item={item}
+              backgroundColor={section.color}
+              isInCart={cartItems.some((ci) => ci.item.id === item.id)}
+            />
           </Grid>
         ))}
         {section.items.length === 0 && (
