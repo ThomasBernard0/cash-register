@@ -42,6 +42,7 @@ import { type Section as SectionType } from "../../types/section";
 import { type Item as ItemType } from "../../types/section";
 import EditItemModal from "../../components/account/editMenu/EditItemModal";
 import EditSectionModal from "../../components/account/editMenu/EditSectionModal";
+import AccountNavbar from "../../components/account/AccountNavbar";
 
 const AccountEditPage: React.FC = () => {
   const {
@@ -296,6 +297,7 @@ const AccountEditPage: React.FC = () => {
 
   return (
     <>
+      <AccountNavbar />
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetectionStrategy}

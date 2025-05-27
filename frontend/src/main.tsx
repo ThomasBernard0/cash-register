@@ -8,6 +8,7 @@ import AuthPage from "./pages/AuthPage";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminPrivateRoute from "./components/AdminPrivateRoute";
 import AdminDashboardPage from "./pages/superadmin/AdminDashboardPage";
+import AccountHubPage from "./pages/account/AccountHubPage";
 import AccountViewPage from "./pages/account/AccountViewPage";
 import AccountEditPage from "./pages/account/AccountEditPage";
 
@@ -20,6 +21,10 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<AuthPage />} />
           <Route
             path="/account"
+            element={<PrivateRoute element={<AccountHubPage />} />}
+          />
+          <Route
+            path="/account/view"
             element={<PrivateRoute element={<AccountViewPage />} />}
           />
           <Route

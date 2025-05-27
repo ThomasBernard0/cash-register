@@ -4,6 +4,7 @@ import { useSections } from "../../api/section";
 import { Box, Button } from "@mui/material";
 import type { Cart, Item } from "../../types/section";
 import CartRecap from "../../components/account/viewMenu/Recap";
+import AccountNavbar from "../../components/account/AccountNavbar";
 
 const AccountViewPage: React.FC = () => {
   const { sections, loading, error } = useSections();
@@ -64,43 +65,46 @@ const AccountViewPage: React.FC = () => {
     return <div style={{ color: "red" }}>{error}</div>;
   }
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
-      <Box
-        sx={{
-          width: "80%",
-          overflowY: "auto",
-          p: 2,
-        }}
-      >
-        <SectionGrid sections={sections} cart={cart} />
-      </Box>
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          width: "20%",
-          bgcolor: "#e0e0e0",
-          p: 2,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+    <>
+      <AccountNavbar />
+      <Box sx={{ display: "flex", height: "calc(100vh - 64px)" }}>
         <Box
           sx={{
-            flex: 1,
+            width: "80%",
             overflowY: "auto",
-            mb: 2,
+            p: 2,
           }}
         >
-          <CartRecap cart={cart} />
+          <SectionGrid sections={sections} cart={cart} />
         </Box>
-        <Button variant="contained" fullWidth>
-          Valider
-        </Button>
+        <Box
+          sx={{
+            position: "sticky",
+            top: 0,
+            height: "calc(100vh - 64px)",
+            width: "20%",
+            bgcolor: "#e0e0e0",
+            p: 2,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            sx={{
+              flex: 1,
+              overflowY: "auto",
+              mb: 2,
+            }}
+          >
+            <CartRecap cart={cart} />
+          </Box>
+          <Button variant="contained" fullWidth>
+            Valider
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
