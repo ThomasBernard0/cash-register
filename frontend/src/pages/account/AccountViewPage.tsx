@@ -1,6 +1,7 @@
 import React from "react";
 import SectionGrid from "../../components/account/viewMenu/SectionGrid";
 import { useSections } from "../../api/section";
+import { Box, Typography } from "@mui/material";
 
 const AccountViewPage: React.FC = () => {
   const { sections, loading, error } = useSections();
@@ -13,9 +14,35 @@ const AccountViewPage: React.FC = () => {
     return <div style={{ color: "red" }}>{error}</div>;
   }
   return (
-    <>
-      <SectionGrid sections={sections} draggable={true} />
-    </>
+    <Box sx={{ display: "flex", height: "100vh" }}>
+      <Box
+        sx={{
+          width: "80%",
+          overflowY: "auto",
+          p: 2,
+        }}
+      >
+        <SectionGrid sections={sections} />
+      </Box>
+      <Box
+        sx={{
+          width: "20%",
+          p: 2,
+          bgcolor: "#e0e0e0",
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          overflow: "hidden",
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          Fixed Panel
+        </Typography>
+        <Typography>
+          Content here stays fixed and does not scroll with the main content.
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 
