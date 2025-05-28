@@ -7,10 +7,11 @@ import { CssBaseline } from "@mui/material";
 import AuthPage from "./pages/AuthPage";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminPrivateRoute from "./components/AdminPrivateRoute";
-import AdminDashboardPage from "./pages/superadmin/AdminDashboardPage";
 import AccountHubPage from "./pages/account/AccountHubPage";
 import AccountViewPage from "./pages/account/AccountViewPage";
 import AccountEditPage from "./pages/account/AccountEditPage";
+import AccountSessionPage from "./pages/account/AccountSessionPage";
+import AdminDashboardPage from "./pages/superadmin/AdminDashboardPage";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -30,6 +31,10 @@ createRoot(document.getElementById("root")!).render(
           <Route
             path="/account/edit"
             element={<PrivateRoute element={<AccountEditPage />} />}
+          />
+          <Route
+            path="/account/session"
+            element={<PrivateRoute element={<AccountSessionPage />} />}
           />
           <Route
             path="/admin"
