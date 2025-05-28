@@ -1,8 +1,35 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
+import { useActiveSession } from "../../api/session";
 
 const AccountHubPage: React.FC = () => {
   const navigate = useNavigate();
+  const { activeSession, loading, error } = useActiveSession();
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return <div style={{ color: "red" }}>{error}</div>;
+  }
 
   return (
     <Box
@@ -33,6 +60,7 @@ const AccountHubPage: React.FC = () => {
             size="large"
             sx={{ textTransform: "none" }}
             onClick={() => navigate("/account/view")}
+            disabled={!activeSession}
           >
             Voir le menu
           </Button>
