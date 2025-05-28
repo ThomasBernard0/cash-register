@@ -119,11 +119,10 @@ export class SectionService {
     id: string,
     data: UpdateSectionDto,
   ): Promise<Section[]> {
+    const section = await this.getSectionById(id);
+    if (!section) throw new NotFoundException('Section not found');
+    this.accountService.verifyAccountOwnership(accountId, section.accountId);
     try {
-      const section = await this.getSectionById(id);
-      if (!section) throw new NotFoundException('Section not found');
-      this.accountService.verifyAccountOwnership(accountId, section.accountId);
-
       await this.prisma.section.update({ where: { id }, data });
       return this.getAllSectionsWithItems(accountId);
     } catch {
@@ -132,11 +131,10 @@ export class SectionService {
   }
 
   async deleteSection(accountId: number, id: string): Promise<Section[]> {
+    const section = await this.getSectionById(id);
+    if (!section) throw new NotFoundException('Section not found');
+    this.accountService.verifyAccountOwnership(accountId, section.accountId);
     try {
-      const section = await this.getSectionById(id);
-      if (!section) throw new NotFoundException('Section not found');
-      this.accountService.verifyAccountOwnership(accountId, section.accountId);
-
       await this.prisma.section.delete({ where: { id } });
       return this.getAllSectionsWithItems(accountId);
     } catch {
@@ -152,11 +150,10 @@ export class SectionService {
     accountId: number,
     data: CreateItemDto,
   ): Promise<Section[]> {
+    const section = await this.getSectionById(data.sectionId);
+    if (!section) throw new NotFoundException('Section not found');
+    this.accountService.verifyAccountOwnership(accountId, section.accountId);
     try {
-      const section = await this.getSectionById(data.sectionId);
-      if (!section) throw new NotFoundException('Section not found');
-      this.accountService.verifyAccountOwnership(accountId, section.accountId);
-
       const lastItem = await this.prisma.item.findFirst({
         where: { sectionId: data.sectionId },
         orderBy: { order: 'desc' },
@@ -182,14 +179,13 @@ export class SectionService {
     id: string,
     data: UpdateItemDto,
   ): Promise<Section[]> {
+    const item = await this.getItemById(id);
+    if (!item) throw new NotFoundException('Item not found');
+
+    const section = await this.getSectionById(item.sectionId);
+    if (!section) throw new NotFoundException('Section not found');
+    this.accountService.verifyAccountOwnership(accountId, section.accountId);
     try {
-      const item = await this.getItemById(id);
-      if (!item) throw new NotFoundException('Item not found');
-
-      const section = await this.getSectionById(item.sectionId);
-      if (!section) throw new NotFoundException('Section not found');
-      this.accountService.verifyAccountOwnership(accountId, section.accountId);
-
       await this.prisma.item.update({ where: { id }, data });
       return this.getAllSectionsWithItems(accountId);
     } catch {
@@ -198,14 +194,13 @@ export class SectionService {
   }
 
   async deleteItem(accountId: number, id: string): Promise<Section[]> {
+    const item = await this.getItemById(id);
+    if (!item) throw new NotFoundException('Item not found');
+
+    const section = await this.getSectionById(item.sectionId);
+    if (!section) throw new NotFoundException('Section not found');
+    this.accountService.verifyAccountOwnership(accountId, section.accountId);
     try {
-      const item = await this.getItemById(id);
-      if (!item) throw new NotFoundException('Item not found');
-
-      const section = await this.getSectionById(item.sectionId);
-      if (!section) throw new NotFoundException('Section not found');
-      this.accountService.verifyAccountOwnership(accountId, section.accountId);
-
       await this.prisma.item.delete({ where: { id } });
       return this.getAllSectionsWithItems(accountId);
     } catch {
