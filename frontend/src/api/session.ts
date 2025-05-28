@@ -25,3 +25,24 @@ export const useActiveSession = () => {
 
   return { activeSession, loading, error, refetch: fetchActiveSession };
 };
+
+export const openSession = async (): Promise<Session> => {
+  try {
+    const res = await api.post<Session>("/sessions/open");
+    return res.data;
+  } catch (error: any) {
+    console.error("Failed to open session:", error);
+    throw new Error("Unable to open session.");
+  }
+};
+
+export const closeActiveSession = async (): Promise<Session> => {
+  try {
+    const res = await api.patch<Session>("/sessions/close");
+    return res.data;
+  } catch (error: any) {
+    console.log("Failed to close session:", error);
+    console.error("Failed to close session:", error);
+    throw new Error("Unable to close session.");
+  }
+};

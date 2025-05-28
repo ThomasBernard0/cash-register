@@ -8,9 +8,20 @@ import {
 } from "@mui/material";
 import AccountNavbar from "../../components/account/AccountNavbar";
 import { useActiveSession } from "../../api/session";
+import { openSession, closeActiveSession } from "../../api/session";
 
 const AccountSessionPage = () => {
-  const { activeSession, loading, error } = useActiveSession();
+  const { activeSession, loading, error, refetch } = useActiveSession();
+
+  const handleOpen = async () => {
+    await openSession();
+    await refetch();
+  };
+
+  const handleClose = async () => {
+    await closeActiveSession();
+    await refetch();
+  };
 
   if (loading) {
     return (
@@ -63,6 +74,7 @@ const AccountSessionPage = () => {
             <Button
               variant="contained"
               color="primary"
+              onClick={handleOpen}
               disabled={!!activeSession}
             >
               Démarrer une session
@@ -70,6 +82,7 @@ const AccountSessionPage = () => {
             <Button
               variant="contained"
               color="primary"
+              onClick={handleClose}
               disabled={!activeSession}
             >
               Clôturer la session

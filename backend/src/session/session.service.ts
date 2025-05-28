@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Session, SessionStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -22,11 +18,11 @@ export class SessionService {
   }
 
   async createActiveSession(accountId: number): Promise<Session> {
-    try {
-      const activeSession = await this.getActiveSession(accountId);
-      if (activeSession)
-        throw new BadRequestException('There is already an active session');
+    const activeSession = await this.getActiveSession(accountId);
+    if (activeSession)
+      throw new BadRequestException('There is already an active session');
 
+    try {
       const newSession = await this.prisma.session.create({
         data: {
           accountId,
@@ -41,11 +37,11 @@ export class SessionService {
   }
 
   async closeActiveSession(accountId: number): Promise<Session> {
-    try {
-      const activeSession = await this.getActiveSession(accountId);
-      if (!activeSession)
-        throw new NotFoundException('Active session not found');
+    const activeSession = await this.getActiveSession(accountId);
+    if (!activeSession)
+      throw new BadRequestException('Active session not found');
 
+    try {
       return this.prisma.session.update({
         where: { id: activeSession.id },
         data: { status: SessionStatus.completed },
