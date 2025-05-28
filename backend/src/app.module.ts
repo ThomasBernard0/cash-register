@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AppController } from './app.controller';
 import { AccountModule } from './account/account.module';
 import { SectionModule } from './section/section.module';
+import { SessionModule } from './session/session.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SectionModule } from './section/section.module';
     PrismaModule,
     AccountModule,
     SectionModule,
+    SessionModule,
   ],
   controllers: [AppController],
 })

@@ -12,10 +12,14 @@ import {
   UpdateItemDto,
   UpdateSectionDto,
 } from './section.dto';
+import { AccountService } from 'src/account/account.service';
 
 @Injectable()
 export class SectionService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private accountService: AccountService,
+  ) {}
 
   async getAllSectionsWithItems(accountId: number): Promise<Section[]> {
     try {
@@ -37,12 +41,6 @@ export class SectionService {
     return this.prisma.section.findUnique({ where: { id } });
   }
 
-  verifyAccountOwnership(requestAccountId: number, resourceAccountId: number) {
-    if (requestAccountId !== resourceAccountId) {
-      throw new ForbiddenException('You do not have access to this resource');
-    }
-  }
-
   async reorderSections(accountId: number, data: OrderSectionDto[]) {
     try {
       await this.prisma.$transaction(async (prisma) => {
@@ -54,7 +52,10 @@ export class SectionService {
           });
           if (!section)
             throw new NotFoundException(`Section ${sectionInput.id} not found`);
-          this.verifyAccountOwnership(accountId, section.accountId);
+          this.accountService.verifyAccountOwnership(
+            accountId,
+            section.accountId,
+          );
 
           if (section.order !== i) {
             await prisma.section.update({
@@ -121,7 +122,7 @@ export class SectionService {
     try {
       const section = await this.getSectionById(id);
       if (!section) throw new NotFoundException('Section not found');
-      this.verifyAccountOwnership(accountId, section.accountId);
+      this.accountService.verifyAccountOwnership(accountId, section.accountId);
 
       await this.prisma.section.update({ where: { id }, data });
       return this.getAllSectionsWithItems(accountId);
@@ -134,7 +135,7 @@ export class SectionService {
     try {
       const section = await this.getSectionById(id);
       if (!section) throw new NotFoundException('Section not found');
-      this.verifyAccountOwnership(accountId, section.accountId);
+      this.accountService.verifyAccountOwnership(accountId, section.accountId);
 
       await this.prisma.section.delete({ where: { id } });
       return this.getAllSectionsWithItems(accountId);
@@ -154,7 +155,7 @@ export class SectionService {
     try {
       const section = await this.getSectionById(data.sectionId);
       if (!section) throw new NotFoundException('Section not found');
-      this.verifyAccountOwnership(accountId, section.accountId);
+      this.accountService.verifyAccountOwnership(accountId, section.accountId);
 
       const lastItem = await this.prisma.item.findFirst({
         where: { sectionId: data.sectionId },
@@ -187,7 +188,7 @@ export class SectionService {
 
       const section = await this.getSectionById(item.sectionId);
       if (!section) throw new NotFoundException('Section not found');
-      this.verifyAccountOwnership(accountId, section.accountId);
+      this.accountService.verifyAccountOwnership(accountId, section.accountId);
 
       await this.prisma.item.update({ where: { id }, data });
       return this.getAllSectionsWithItems(accountId);
@@ -203,7 +204,7 @@ export class SectionService {
 
       const section = await this.getSectionById(item.sectionId);
       if (!section) throw new NotFoundException('Section not found');
-      this.verifyAccountOwnership(accountId, section.accountId);
+      this.accountService.verifyAccountOwnership(accountId, section.accountId);
 
       await this.prisma.item.delete({ where: { id } });
       return this.getAllSectionsWithItems(accountId);

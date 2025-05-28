@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { AccountSummary } from './account.types';
@@ -66,5 +70,11 @@ export class AccountService {
       },
     });
     return { message: 'Password updated' };
+  }
+
+  verifyAccountOwnership(requestAccountId: number, resourceAccountId: number) {
+    if (requestAccountId !== resourceAccountId) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
   }
 }
