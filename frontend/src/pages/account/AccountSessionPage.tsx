@@ -9,6 +9,7 @@ import {
 import AccountNavbar from "../../components/account/AccountNavbar";
 import { useActiveSession } from "../../api/session";
 import { openSession, closeActiveSession } from "../../api/session";
+import { getFormattedDate } from "../../helpers/getFormattedDate";
 
 const AccountSessionPage = () => {
   const { activeSession, loading, error, refetch } = useActiveSession();
@@ -62,11 +63,16 @@ const AccountSessionPage = () => {
 
           <Box sx={{ mb: 4, display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography>
-              Session en cours :{" "}
-              {activeSession ? activeSession.createdAt.toString() : "Non"}
+              {"Session en cours : "}
+              {activeSession
+                ? getFormattedDate(activeSession.createdAt)
+                : "Non"}
             </Typography>
             {activeSession && (
-              <Typography>CA : {activeSession.totalRevenueInCent}</Typography>
+              <Typography>
+                {"Chiffre d'affaires : "}
+                {(activeSession.totalRevenueInCent / 100).toFixed(2)} €
+              </Typography>
             )}
           </Box>
 
