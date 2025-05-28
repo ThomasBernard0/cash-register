@@ -23,5 +23,5 @@ export const useActiveSession = () => {
     fetchActiveSession();
   }, []);
 
-  return { activeSession, loading, error };
+  return { activeSession, loading, error, refetch: fetchActiveSession };
 };

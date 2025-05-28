@@ -1,7 +1,35 @@
-import { Box, Typography, Button, Grid, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Grid,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import AccountNavbar from "../../components/account/AccountNavbar";
+import { useActiveSession } from "../../api/session";
 
 const AccountSessionPage = () => {
+  const { activeSession, loading, error } = useActiveSession();
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return <div style={{ color: "red" }}>{error}</div>;
+  }
   return (
     <>
       <AccountNavbar />
@@ -22,17 +50,29 @@ const AccountSessionPage = () => {
           </Typography>
 
           <Box sx={{ mb: 4, display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography>Session en cours : </Typography>
-            <Typography>CA : </Typography>
-            <Typography>Label 3</Typography>
+            <Typography>
+              Session en cours :{" "}
+              {activeSession ? activeSession.createdAt.toString() : "Non"}
+            </Typography>
+            {activeSession && (
+              <Typography>CA : {activeSession.totalRevenueInCent}</Typography>
+            )}
           </Box>
 
           <Grid container justifyContent="space-between">
-            <Button variant="contained" color="primary">
-              Bouton Gauche
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!!activeSession}
+            >
+              Démarrer une session
             </Button>
-            <Button variant="contained" color="primary">
-              Bouton Droit
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!activeSession}
+            >
+              Clôturer la session
             </Button>
           </Grid>
         </Paper>
