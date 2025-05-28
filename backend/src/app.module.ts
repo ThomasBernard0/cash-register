@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AccountModule } from './account/account.module';
 import { SectionModule } from './section/section.module';
 import { SessionModule } from './session/session.module';
+import { CommandModule } from './command/command.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SessionModule } from './session/session.module';
     AccountModule,
     SectionModule,
     SessionModule,
+    CommandModule,
   ],
   controllers: [AppController],
 })
