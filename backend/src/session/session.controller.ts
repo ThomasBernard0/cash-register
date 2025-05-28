@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SessionService } from './session.service';
 
@@ -11,5 +11,17 @@ export class SessionController {
   async getActiveSession(@Req() req) {
     const accountId: number = req.user.sub;
     return this.sessionService.getSessionActive(accountId);
+  }
+
+  @Post('open')
+  async openSession(@Req() req) {
+    const accountId: number = req.user.sub;
+    return this.sessionService.createActiveSession(accountId);
+  }
+
+  @Patch('close')
+  async closeSession(@Req() req) {
+    const accountId: number = req.user.sub;
+    return this.sessionService.closeActiveSession(accountId);
   }
 }
