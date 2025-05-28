@@ -10,6 +10,7 @@ export class SessionController {
   @Get('active')
   async getActiveSession(@Req() req) {
     const accountId: number = req.user.sub;
-    return this.sessionService.getSessionActive(accountId);
+    const activeSession = await this.sessionService.getSessionActive(accountId);
+    return { activeSession: activeSession ?? null };
   }
 }
