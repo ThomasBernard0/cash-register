@@ -13,3 +13,8 @@ export type Cart = {
     };
   };
 };
+
+export type OrderItem = {
+  idItem: string;
+  quantity: number;
+};

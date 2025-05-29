@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { type Cart } from "../../../types/command";
+import { type Cart, type OrderItem } from "../../../types/command";
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
+import { createCommand } from "../../../api/command";
 
 const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
   const [isConfirmPaymentModalOpen, setIsConfirmPaymentModalOpen] =
     useState<boolean>(false);
+
   const getCartTotalInCent = (cart: Cart): number => {
     return Object.values(cart).reduce((sectionAcc, section) => {
       const sectionTotal = Object.values(section.items).reduce(
@@ -17,6 +19,27 @@ const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
       return sectionAcc + sectionTotal;
     }, 0);
   };
+
+  const handleCloseModal = () => {
+    setIsConfirmPaymentModalOpen(false);
+  };
+
+  const handleConfirm = async () => {
+    const items: OrderItem[] = [];
+    for (const sectionId in cart) {
+      const section = cart[sectionId];
+      for (const itemId in section.items) {
+        const item = section.items[itemId];
+        items.push({
+          idItem: item.item.id,
+          quantity: item.quantity,
+        });
+      }
+    }
+    await createCommand(items);
+    handleCloseModal();
+  };
+
   return (
     <>
       <Box
@@ -78,12 +101,8 @@ const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
       <ConfirmPaymentModal
         open={isConfirmPaymentModalOpen}
         priceInCent={getCartTotalInCent(cart)}
-        onClose={() => {
-          setIsConfirmPaymentModalOpen(false);
-        }}
-        onConfirm={() => {
-          return;
-        }}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirm}
       />
     </>
   );
