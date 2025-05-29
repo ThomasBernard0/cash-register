@@ -1,7 +1,7 @@
 # ---- Frontend Build Stage ----
 FROM node:22-alpine AS frontend-builder
 WORKDIR /app/frontend
-ENV VITE_API_BASE_URL=time-bomb-production.up.railway.app
+ENV VITE_API_BASE_URL=cash-register-cash-register-prod.up.railway.app
 
 # Copy package files and install dependencies
 COPY frontend/package.json frontend/package-lock.json* ./
