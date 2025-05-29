@@ -48,7 +48,6 @@ RUN cd backend && npm ci
 # Copy built backend from the backend-builder stage
 COPY --from=backend-builder /app/backend/dist ./backend/dist
 COPY --from=backend-builder /app/backend/node_modules/.prisma ./backend/node_modules/.prisma
-
 COPY --from=backend-builder /app/backend/prisma ./backend/prisma
 
 # Copy built frontend from the frontend-builder stage
@@ -58,7 +57,7 @@ RUN mkdir -p ./backend/static
 COPY --from=frontend-builder /app/frontend/dist ./backend/static
 
 # Copy entrypoint script and make it executable
-COPY --from=backend-builder backend/entrypoint.sh ./entrypoint.sh
+COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
 # Expose the port the backend runs on
