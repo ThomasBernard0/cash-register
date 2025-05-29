@@ -8,6 +8,10 @@ npx prisma migrate deploy --schema=backend/prisma/schema.prisma
 echo "Seeding database..."
 node backend/dist/prisma/seed.js
 
+
+echo "===== Debug listing /app/backend/dist ====="
+ls -l /app/backend/dist
+
 # Start the server
 echo "Starting backend..."
 node backend/dist/main.js
