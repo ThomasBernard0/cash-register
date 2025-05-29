@@ -82,7 +82,7 @@ const AccountViewPage: React.FC = () => {
       <Box sx={{ display: "flex", height: "calc(100vh - 64px)" }}>
         <Box
           sx={{
-            width: "80%",
+            width: "75%",
             overflowY: "auto",
             p: 2,
           }}
@@ -99,7 +99,7 @@ const AccountViewPage: React.FC = () => {
             position: "sticky",
             top: 0,
             height: "calc(100vh - 64px)",
-            width: "20%",
+            width: "25%",
             bgcolor: "#e0e0e0",
             p: 2,
             overflow: "hidden",
@@ -107,18 +107,7 @@ const AccountViewPage: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <Box
-            sx={{
-              flex: 1,
-              overflowY: "auto",
-              mb: 2,
-            }}
-          >
-            <CartRecap cart={cart} />
-          </Box>
-          <Button variant="contained" fullWidth>
-            Valider
-          </Button>
+          <CartRecap cart={cart} />
         </Box>
       </Box>
     </>
