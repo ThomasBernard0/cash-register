@@ -4,7 +4,12 @@ import { type Cart, type OrderItem } from "../../../types/command";
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
 import { createCommand } from "../../../api/command";
 
-const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
+type Props = {
+  cart: Cart;
+  resetCart: () => void;
+};
+
+const CartRecap: React.FC<Props> = ({ cart, resetCart }) => {
   const [isConfirmPaymentModalOpen, setIsConfirmPaymentModalOpen] =
     useState<boolean>(false);
 
@@ -37,6 +42,7 @@ const CartRecap: React.FC<{ cart: Cart }> = ({ cart }) => {
       }
     }
     await createCommand(items);
+    resetCart();
     handleCloseModal();
   };
 

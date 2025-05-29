@@ -58,6 +58,10 @@ const AccountViewPage: React.FC = () => {
     });
   };
 
+  const resetCart = () => {
+    setCart({});
+  };
+
   if (loading) {
     return (
       <Box
@@ -107,7 +111,7 @@ const AccountViewPage: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <CartRecap cart={cart} />
+          <CartRecap cart={cart} resetCart={resetCart} />
         </Box>
       </Box>
     </>
