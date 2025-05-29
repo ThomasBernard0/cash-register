@@ -58,7 +58,7 @@ export class CommandService {
 
       return { message: 'Commande créée avec succès.' };
     } catch (error) {
-      throw new BadRequestException('Failed to fetch active session');
+      throw new BadRequestException('Failed to create command');
     }
   }
 }

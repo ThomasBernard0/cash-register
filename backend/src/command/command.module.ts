@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CommandService } from './command.service';
 import { CommandController } from './command.controller';
-import { SessionService } from 'src/session/session.service';
+import { SessionModule } from 'src/session/session.module';
 
 @Module({
-  imports: [SessionService],
+  imports: [SessionModule],
   providers: [CommandService],
   controllers: [CommandController],
   exports: [CommandService],
