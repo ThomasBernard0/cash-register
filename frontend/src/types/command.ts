@@ -18,3 +18,19 @@ export type OrderItem = {
   idItem: string;
   quantity: number;
 };
+
+export type CommandItem = {
+  id: string;
+  label: string;
+  priceInCent: number;
+  quantity: number;
+};
+
+export type Command = {
+  id: number;
+  totalPriceInCent: number;
+  createdAt: Date;
+  type: string;
+  status: string;
+  items: CommandItem[];
+};

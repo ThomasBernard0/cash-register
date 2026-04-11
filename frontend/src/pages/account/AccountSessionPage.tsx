@@ -1,8 +1,8 @@
+import { useState } from "react";
 import {
   Box,
   Typography,
   Button,
-  Grid,
   Paper,
   CircularProgress,
   Divider,
@@ -16,6 +16,9 @@ import AccountNavbar from "../../components/account/AccountNavbar";
 import { useActiveSession, useClosedSessions } from "../../api/session";
 import { openSession, closeActiveSession } from "../../api/session";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
+import SessionCommandsModal from "../../components/account/SessionCommandsModal";
+import SessionSummaryModal from "../../components/account/SessionSummaryModal";
+import type { Session } from "../../types/session";
 
 const AccountSessionPage = () => {
   const { activeSession, loading, error, refetch } = useActiveSession();
@@ -30,6 +33,30 @@ const AccountSessionPage = () => {
     await closeActiveSession();
     await refetch();
     await refetchClosed();
+  };
+
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [commandsModalOpen, setCommandsModalOpen] = useState(false);
+  const [summaryModalOpen, setSummaryModalOpen] = useState(false);
+
+  const handleViewCommands = (session: Session) => {
+    setSelectedSession(session);
+    setCommandsModalOpen(true);
+  };
+
+  const handleCloseCommandsModal = () => {
+    setCommandsModalOpen(false);
+    setSelectedSession(null);
+  };
+
+  const handleViewSummary = (session: Session) => {
+    setSelectedSession(session);
+    setSummaryModalOpen(true);
+  };
+
+  const handleCloseSummaryModal = () => {
+    setSummaryModalOpen(false);
+    setSelectedSession(null);
   };
 
   if (loading) {
@@ -60,7 +87,7 @@ const AccountSessionPage = () => {
         <Paper
           elevation={4}
           sx={{
-            width: "50%",
+            width: "80%",
             mt: 6,
             p: 4,
             borderRadius: 4,
@@ -85,24 +112,29 @@ const AccountSessionPage = () => {
             )}
           </Box>
 
-          <Grid container justifyContent="space-between">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleOpen}
-              disabled={!!activeSession}
-            >
+          {!activeSession ? (
+            <Button variant="contained" color="primary" onClick={handleOpen}>
               Démarrer une session
             </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleClose}
-              disabled={!activeSession}
-            >
-              Clôturer la session
-            </Button>
-          </Grid>
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "flex-start" }}>
+              <Button
+                variant="outlined"
+                onClick={() => handleViewCommands(activeSession)}
+              >
+                Voir les commandes
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => handleViewSummary(activeSession)}
+              >
+                Récapitulatif
+              </Button>
+              <Button variant="contained" color="primary" onClick={handleClose}>
+                Clôturer la session
+              </Button>
+            </Box>
+          )}
 
           {closedSessions.length > 0 && (
             <>
@@ -118,6 +150,9 @@ const AccountSessionPage = () => {
                     <TableCell sx={{ fontWeight: "bold" }} align="right">
                       Chiffre d'affaires
                     </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="right">
+                      Récapitulatif
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -130,6 +165,15 @@ const AccountSessionPage = () => {
                       <TableCell align="right">
                         {(session.totalRevenueInCent / 100).toFixed(2)} €
                       </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => handleViewSummary(session)}
+                        >
+                          Récapitulatif
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -138,6 +182,16 @@ const AccountSessionPage = () => {
           )}
         </Paper>
       </Box>
+      <SessionCommandsModal
+        open={commandsModalOpen}
+        onClose={handleCloseCommandsModal}
+        session={selectedSession}
+      />
+      <SessionSummaryModal
+        open={summaryModalOpen}
+        onClose={handleCloseSummaryModal}
+        session={selectedSession}
+      />
     </>
   );
 };

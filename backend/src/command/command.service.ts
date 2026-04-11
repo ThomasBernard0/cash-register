@@ -61,4 +61,17 @@ export class CommandService {
       throw new BadRequestException('Failed to create command');
     }
   }
+
+  async getCommandsBySession(accountId: number, sessionId: string) {
+    const session = await this.prisma.session.findFirst({
+      where: { id: sessionId, accountId },
+    });
+    if (!session) throw new BadRequestException('Session not found');
+
+    return this.prisma.command.findMany({
+      where: { sessionId },
+      include: { items: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }

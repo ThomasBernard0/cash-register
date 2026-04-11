@@ -1,5 +1,10 @@
-import type { OrderItem } from "../types/command";
+import type { OrderItem, Command } from "../types/command";
 import api from "./api";
+
+export const getCommandsBySession = async (sessionId: string): Promise<Command[]> => {
+  const res = await api.get<Command[]>(`/commands/session/${sessionId}`);
+  return res.data;
+};
 
 export const createCommand = async (items: OrderItem[]): Promise<string> => {
   try {

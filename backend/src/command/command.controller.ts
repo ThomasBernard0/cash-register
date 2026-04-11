@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CommandService } from './command.service';
 import { CommandDto } from './command.dto';
@@ -12,5 +12,11 @@ export class CommandController {
   async createCommand(@Body() command: CommandDto, @Req() req) {
     const accountId: number = req.user.sub;
     return this.commandService.createCommand(accountId, command);
+  }
+
+  @Get('session/:sessionId')
+  async getCommandsBySession(@Param('sessionId') sessionId: string, @Req() req) {
+    const accountId: number = req.user.sub;
+    return this.commandService.getCommandsBySession(accountId, sessionId);
   }
 }
