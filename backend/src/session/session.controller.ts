@@ -7,6 +7,12 @@ import { SessionService } from './session.service';
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
+  @Get()
+  async getClosedSessions(@Req() req) {
+    const accountId: number = req.user.sub;
+    return this.sessionService.getClosedSessions(accountId);
+  }
+
   @Get('active')
   async getActiveSession(@Req() req) {
     const accountId: number = req.user.sub;

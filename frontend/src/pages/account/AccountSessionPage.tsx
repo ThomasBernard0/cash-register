@@ -5,14 +5,21 @@ import {
   Grid,
   Paper,
   CircularProgress,
+  Divider,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@mui/material";
 import AccountNavbar from "../../components/account/AccountNavbar";
-import { useActiveSession } from "../../api/session";
+import { useActiveSession, useClosedSessions } from "../../api/session";
 import { openSession, closeActiveSession } from "../../api/session";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 
 const AccountSessionPage = () => {
   const { activeSession, loading, error, refetch } = useActiveSession();
+  const { sessions: closedSessions, refetch: refetchClosed } = useClosedSessions();
 
   const handleOpen = async () => {
     await openSession();
@@ -22,6 +29,7 @@ const AccountSessionPage = () => {
   const handleClose = async () => {
     await closeActiveSession();
     await refetch();
+    await refetchClosed();
   };
 
   if (loading) {
@@ -42,6 +50,7 @@ const AccountSessionPage = () => {
   if (error) {
     return <div style={{ color: "red" }}>{error}</div>;
   }
+
   return (
     <>
       <AccountNavbar />
@@ -94,6 +103,39 @@ const AccountSessionPage = () => {
               Clôturer la session
             </Button>
           </Grid>
+
+          {closedSessions.length > 0 && (
+            <>
+              <Divider sx={{ my: 4 }} />
+              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+                Sessions passées
+              </Typography>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "bold" }}>Ouverture</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Fermeture</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="right">
+                      Chiffre d'affaires
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {closedSessions.map((session) => (
+                    <TableRow key={session.id}>
+                      <TableCell>{getFormattedDate(session.createdAt)}</TableCell>
+                      <TableCell>
+                        {session.closedAt ? getFormattedDate(session.closedAt) : "—"}
+                      </TableCell>
+                      <TableCell align="right">
+                        {(session.totalRevenueInCent / 100).toFixed(2)} €
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </>
+          )}
         </Paper>
       </Box>
     </>

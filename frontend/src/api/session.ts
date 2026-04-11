@@ -26,6 +26,30 @@ export const useActiveSession = () => {
   return { activeSession, loading, error, refetch: fetchActiveSession };
 };
 
+export const useClosedSessions = () => {
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSessions = async () => {
+    try {
+      const res = await api.get<Session[]>("/sessions");
+      setSessions(res.data);
+    } catch (err: any) {
+      console.error("Failed to fetch closed sessions:", err);
+      setError("Unable to fetch closed sessions.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  return { sessions, loading, error, refetch: fetchSessions };
+};
+
 export const openSession = async (): Promise<Session> => {
   try {
     const res = await api.post<Session>("/sessions/open");

@@ -44,7 +44,7 @@ export class SessionService {
     try {
       return this.prisma.session.update({
         where: { id: activeSession.id },
-        data: { status: SessionStatus.completed },
+        data: { status: SessionStatus.completed, closedAt: new Date() },
       });
     } catch (error) {
       throw new BadRequestException('Failed to close active session');
@@ -58,6 +58,17 @@ export class SessionService {
       });
     } catch {
       throw new BadRequestException('Failed to get active session');
+    }
+  }
+
+  async getClosedSessions(accountId: number): Promise<Session[]> {
+    try {
+      return await this.prisma.session.findMany({
+        where: { accountId, status: SessionStatus.completed },
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch {
+      throw new BadRequestException('Failed to get closed sessions');
     }
   }
 }

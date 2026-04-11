@@ -41,6 +41,7 @@ model Session {
   commands           Command[]
   totalRevenueInCent Int
   createdAt          DateTime      @default(now())
+  closedAt           DateTime?
   status             SessionStatus
   account            Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId          Int
