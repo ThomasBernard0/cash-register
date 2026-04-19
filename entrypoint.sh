@@ -2,7 +2,7 @@
 
 # Apply Prisma migrations
 echo "Running Prisma migrations..."
-npx prisma migrate deploy --schema=backend/prisma/schema.prisma
+./backend/node_modules/.bin/prisma migrate deploy --schema=backend/prisma/schema.prisma
 
 # Run seed script
 echo "Seeding database..."

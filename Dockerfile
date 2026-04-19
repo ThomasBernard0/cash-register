@@ -25,7 +25,7 @@ RUN npm ci
 # Copy the rest of the backend code
 COPY backend/ ./
 
-RUN npx prisma generate
+RUN ./node_modules/.bin/prisma generate
 
 # Build the backend
 RUN npm run build
@@ -48,6 +48,8 @@ RUN cd backend && npm ci
 # Copy built backend from the backend-builder stage
 COPY --from=backend-builder /app/backend/dist ./backend/dist
 COPY --from=backend-builder /app/backend/node_modules/.prisma ./backend/node_modules/.prisma
+COPY --from=backend-builder /app/backend/node_modules/.bin/prisma ./backend/node_modules/.bin/prisma
+COPY --from=backend-builder /app/backend/node_modules/prisma ./backend/node_modules/prisma
 COPY --from=backend-builder /app/backend/prisma ./backend/prisma
 
 # Copy built frontend from the frontend-builder stage
