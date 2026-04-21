@@ -23,7 +23,7 @@ const ItemCard: React.FC<Props> = ({
     <Card
       sx={{
         minHeight: 100,
-        maxHeight: 180,
+        height: "100%",
         display: "flex",
         borderRadius: 2,
         boxShadow: 2,
@@ -32,7 +32,6 @@ const ItemCard: React.FC<Props> = ({
       <CardContent
         sx={{
           minHeight: 100,
-          maxHeight: 180,
           flexBasis: "75%",
           textAlign: "left",
           backgroundColor: item.color,
