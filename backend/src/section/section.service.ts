@@ -103,7 +103,6 @@ export class SectionService {
       await this.prisma.section.create({
         data: {
           title: 'Nouvelle section',
-          color: '#FFFFFF',
           order: nextOrder,
           accountId,
         },
@@ -165,6 +164,7 @@ export class SectionService {
           ...data,
           label: 'Nouvel item',
           priceInCent: 0,
+          color: '#FFFFFF',
           order: nextOrder,
         },
       });

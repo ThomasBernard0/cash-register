@@ -6,7 +6,6 @@ import { getDarkerColor } from "../../../helpers/getDarkerColor";
 
 type Props = {
   item: Item;
-  backgroundColor: string;
   count: number;
   addToCart: (sectionId: string, sectionTitle: string, item: Item) => void;
   sectionTitle: string;
@@ -15,7 +14,6 @@ type Props = {
 
 const ItemCard: React.FC<Props> = ({
   item,
-  backgroundColor,
   count,
   addToCart,
   sectionTitle,
@@ -37,7 +35,7 @@ const ItemCard: React.FC<Props> = ({
           maxHeight: 180,
           flexBasis: "75%",
           textAlign: "left",
-          backgroundColor: backgroundColor,
+          backgroundColor: item.color,
           cursor: "pointer",
           display: "flex",
           flexDirection: "column",
@@ -54,7 +52,7 @@ const ItemCard: React.FC<Props> = ({
           padding: 0,
           minWidth: 0,
           borderRadius: 0,
-          backgroundColor: getDarkerColor(backgroundColor),
+          backgroundColor: getDarkerColor(item.color),
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-around",

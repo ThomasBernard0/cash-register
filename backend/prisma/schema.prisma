@@ -20,7 +20,6 @@ model Account {
 model Section {
   id        String  @id @default(uuid())
   title     String
-  color     String
   order     Int
   items     Item[]
   account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
@@ -31,6 +30,7 @@ model Item {
   id          String  @id @default(uuid())
   label       String
   priceInCent Int
+  color       String
   order       Int
   section     Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   sectionId   String

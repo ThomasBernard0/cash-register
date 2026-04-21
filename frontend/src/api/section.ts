@@ -65,13 +65,11 @@ export const useSections = () => {
 
   const editSection = async (
     sectionId: string,
-    title: string,
-    color: string
+    title: string
   ): Promise<void> => {
     try {
       const res = await api.patch<Section[]>(`/sections/${sectionId}`, {
         title,
-        color,
       });
       setSections(res.data);
     } catch (error: any) {
@@ -105,12 +103,14 @@ export const useSections = () => {
   const editItem = async (
     itemId: string,
     label: string,
-    priceInCent: number
+    priceInCent: number,
+    color: string
   ): Promise<void> => {
     try {
       const res = await api.patch<Section[]>(`/sections/items/${itemId}`, {
         label,
         priceInCent,
+        color,
       });
       setSections(res.data);
     } catch (error: any) {

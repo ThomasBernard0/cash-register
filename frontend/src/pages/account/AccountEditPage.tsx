@@ -262,7 +262,7 @@ const AccountEditPage: React.FC = () => {
   const renderSectionDragOverlay = (section: SectionType) => (
     <Section section={section}>
       {section.items.map((item) => (
-        <Item key={item.id} item={item} backgroundColor={section.color} />
+        <Item key={item.id} item={item} />
       ))}
     </Section>
   );
@@ -357,7 +357,6 @@ const AccountEditPage: React.FC = () => {
                       key={item.id}
                       id={item.id}
                       item={item}
-                      backgroundColor={section.color}
                       onEdit={() => {
                         setEditingItem(item);
                         setIsEditItemModalOpen(true);

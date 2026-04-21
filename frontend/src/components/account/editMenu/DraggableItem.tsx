@@ -6,7 +6,6 @@ import { type Item as ItemType } from "../../../types/section";
 type Props = {
   id: UniqueIdentifier;
   item: ItemType;
-  backgroundColor: string;
   disabled?: boolean;
   onEdit: () => void;
   onDelete: () => void;
@@ -15,7 +14,6 @@ type Props = {
 const DraggableItem = ({
   id,
   item,
-  backgroundColor,
   disabled,
   onEdit,
   onDelete,
@@ -28,7 +26,6 @@ const DraggableItem = ({
     <Item
       ref={disabled ? undefined : setNodeRef}
       item={item}
-      backgroundColor={backgroundColor}
       onEdit={onEdit}
       onDelete={onDelete}
       dragging={isDragging}

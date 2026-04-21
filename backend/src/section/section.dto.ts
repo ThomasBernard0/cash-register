@@ -12,10 +12,6 @@ export class UpdateSectionDto {
   @IsOptional()
   @IsString()
   title?: string;
-
-  @IsOptional()
-  @IsString()
-  color?: string;
 }
 
 export class OrderSectionDto {
@@ -48,4 +44,8 @@ export class UpdateItemDto {
   @IsInt()
   @Min(0)
   priceInCent?: number;
+
+  @IsOptional()
+  @IsString()
+  color?: string;
 }

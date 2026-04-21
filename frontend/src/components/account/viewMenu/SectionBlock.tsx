@@ -27,7 +27,6 @@ const SectionBlock: React.FC<Props> = ({
           <Grid size={3} key={item.id}>
             <ItemCard
               item={item}
-              backgroundColor={section.color}
               count={
                 cartItems.find((ci) => ci.item.id === item.id)?.quantity || 0
               }

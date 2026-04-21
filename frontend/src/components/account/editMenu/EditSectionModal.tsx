@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import { type Section } from "../../../types/section";
-import { ChromePicker } from "react-color";
 
 type Props = {
   open: boolean;
   section: Section | null;
   onClose: () => void;
-  onEdit: (sectionId: string, title: string, color: string) => void;
+  onEdit: (sectionId: string, title: string) => void;
 };
 
 const EditSectionModal: React.FC<Props> = ({
@@ -17,27 +16,24 @@ const EditSectionModal: React.FC<Props> = ({
   onEdit,
 }) => {
   const [title, setTitle] = useState<string>("");
-  const [color, setColor] = useState<string>("");
 
   useEffect(() => {
     if (section) {
       setTitle(section.title);
-      setColor(section.color.toString());
     } else {
       setTitle("");
-      setColor("");
     }
   }, [section]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!section || !isFormValid) return;
-    onEdit(section.id, title, color);
+    onEdit(section.id, title);
     onClose();
   };
 
   const isFormValid = () => {
-    return title.trim() !== "" && color.trim() !== "";
+    return title.trim() !== "";
   };
 
   return (
@@ -55,7 +51,6 @@ const EditSectionModal: React.FC<Props> = ({
           borderRadius: 2,
           boxShadow: 24,
           width: "50%",
-          height: "50%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -64,26 +59,14 @@ const EditSectionModal: React.FC<Props> = ({
         <Typography variant="h6" mb={2}>
           Modifier la section
         </Typography>
-        <>
-          <TextField
-            label="Titre"
-            fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <Typography variant="body2" mb={1}>
-            Couleur
-          </Typography>
-          <ChromePicker
-            color={color}
-            onChangeComplete={(colorResult: { hex: string }) =>
-              setColor(colorResult.hex)
-            }
-            disableAlpha
-          />
-        </>
-        <Box sx={{ mt: "auto", pt: 2 }}>
+        <TextField
+          label="Titre"
+          fullWidth
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <Box sx={{ pt: 2 }}>
           <Button
             variant="contained"
             fullWidth
