@@ -6,6 +6,10 @@ export const getCommandsBySession = async (sessionId: string): Promise<Command[]
   return res.data;
 };
 
+export const deleteCommand = async (id: number): Promise<void> => {
+  await api.delete(`/commands/${id}`);
+};
+
 export const createCommand = async (items: OrderItem[]): Promise<string> => {
   try {
     const res = await api.post<{ message: string }>("/commands", { items });

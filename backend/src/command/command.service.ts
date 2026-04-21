@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommandDto } from './command.dto';
 import { SessionService } from 'src/session/session.service';
@@ -60,6 +60,25 @@ export class CommandService {
     } catch (error) {
       throw new BadRequestException('Failed to create command');
     }
+  }
+
+  async deleteCommand(accountId: number, commandId: number): Promise<{}> {
+    const command = await this.prisma.command.findUnique({
+      where: { id: commandId },
+      include: { session: { select: { accountId: true, id: true } } },
+    });
+    if (!command) throw new NotFoundException('Command not found');
+    if (command.session.accountId !== accountId) throw new ForbiddenException();
+
+    await this.prisma.$transaction([
+      this.prisma.command.delete({ where: { id: commandId } }),
+      this.prisma.session.update({
+        where: { id: command.session.id },
+        data: { totalRevenueInCent: { decrement: command.totalPriceInCent } },
+      }),
+    ]);
+
+    return { message: 'Commande supprimée avec succès.' };
   }
 
   async getCommandsBySession(accountId: number, sessionId: string) {

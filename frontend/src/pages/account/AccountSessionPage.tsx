@@ -186,6 +186,7 @@ const AccountSessionPage = () => {
         open={commandsModalOpen}
         onClose={handleCloseCommandsModal}
         session={selectedSession}
+        onCommandDeleted={refetch}
       />
       <SessionSummaryModal
         open={summaryModalOpen}
