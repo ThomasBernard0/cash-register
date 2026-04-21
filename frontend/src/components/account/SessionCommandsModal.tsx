@@ -10,7 +10,6 @@ import {
   TableCell,
   CircularProgress,
   Button,
-  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -117,29 +116,17 @@ const SessionCommandsModal = ({ open, onClose, session, onCommandDeleted }: Prop
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: "bold" }}>#</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Heure</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Total</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Statut</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Articles</TableCell>
                   <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
                 {commands.map((cmd) => (
-                  <TableRow key={cmd.id}>
-                    <TableCell>{cmd.id}</TableCell>
+                  <TableRow key={cmd.id} sx={{ "& td": { borderBottom: "none", pt: 2 } }}>
                     <TableCell>{getFormattedDate(cmd.createdAt)}</TableCell>
-                    <TableCell>
-                      {(cmd.totalPriceInCent / 100).toFixed(2)} €
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={cmd.status}
-                        color={cmd.status === "validated" ? "success" : "warning"}
-                        size="small"
-                      />
-                    </TableCell>
+                    <TableCell>{(cmd.totalPriceInCent / 100).toFixed(2)} €</TableCell>
                     <TableCell>
                       {cmd.items.map((item) => (
                         <Typography key={item.id} variant="caption" display="block">
@@ -148,11 +135,7 @@ const SessionCommandsModal = ({ open, onClose, session, onCommandDeleted }: Prop
                       ))}
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => setCommandToDelete(cmd)}
-                      >
+                      <IconButton size="small" color="error" onClick={() => setCommandToDelete(cmd)}>
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </TableCell>
@@ -174,14 +157,14 @@ const SessionCommandsModal = ({ open, onClose, session, onCommandDeleted }: Prop
         <DialogTitle>Supprimer la commande</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Supprimer la commande #{commandToDelete?.id} ({((commandToDelete?.totalPriceInCent ?? 0) / 100).toFixed(2)} €) ? Cette action est irréversible.
+            Supprimer la commande ? Cette action est irréversible.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCommandToDelete(null)} disabled={deleting}>
+          <Button variant="contained" onClick={() => setCommandToDelete(null)} disabled={deleting}>
             Annuler
           </Button>
-          <Button onClick={handleConfirmDelete} color="error" disabled={deleting}>
+          <Button variant="contained" onClick={handleConfirmDelete} color="error" disabled={deleting}>
             Supprimer
           </Button>
         </DialogActions>
