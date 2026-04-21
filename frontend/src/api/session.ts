@@ -60,6 +60,10 @@ export const openSession = async (): Promise<Session> => {
   }
 };
 
+export const deleteSession = async (id: string): Promise<void> => {
+  await api.delete(`/sessions/${id}`);
+};
+
 export const closeActiveSession = async (): Promise<Session> => {
   try {
     const res = await api.patch<Session>("/sessions/close");

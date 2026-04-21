@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Session, SessionStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -59,6 +59,15 @@ export class SessionService {
     } catch {
       throw new BadRequestException('Failed to get active session');
     }
+  }
+
+  async deleteSession(accountId: number, sessionId: string): Promise<{}> {
+    const session = await this.prisma.session.findUnique({ where: { id: sessionId } });
+    if (!session) throw new NotFoundException('Session not found');
+    if (session.accountId !== accountId) throw new ForbiddenException();
+
+    await this.prisma.session.delete({ where: { id: sessionId } });
+    return { message: 'Session supprimée avec succès.' };
   }
 
   async getClosedSessions(accountId: number): Promise<Session[]> {

@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SessionService } from './session.service';
 
@@ -29,5 +29,11 @@ export class SessionController {
   async closeSession(@Req() req) {
     const accountId: number = req.user.sub;
     return this.sessionService.closeActiveSession(accountId);
+  }
+
+  @Delete(':id')
+  async deleteSession(@Param('id') id: string, @Req() req) {
+    const accountId: number = req.user.sub;
+    return this.sessionService.deleteSession(accountId, id);
   }
 }

@@ -11,10 +11,17 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AccountNavbar from "../../components/account/AccountNavbar";
 import { useActiveSession, useClosedSessions } from "../../api/session";
-import { openSession, closeActiveSession } from "../../api/session";
+import { openSession, closeActiveSession, deleteSession } from "../../api/session";
 import { getFormattedDate } from "../../helpers/getFormattedDate";
 import SessionCommandsModal from "../../components/account/SessionCommandsModal";
 import SessionSummaryModal from "../../components/account/SessionSummaryModal";
@@ -38,6 +45,20 @@ const AccountSessionPage = () => {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [commandsModalOpen, setCommandsModalOpen] = useState(false);
   const [summaryModalOpen, setSummaryModalOpen] = useState(false);
+  const [sessionToDelete, setSessionToDelete] = useState<Session | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleConfirmDeleteSession = async () => {
+    if (!sessionToDelete) return;
+    setDeleting(true);
+    try {
+      await deleteSession(sessionToDelete.id);
+      setSessionToDelete(null);
+      await refetchClosed();
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const handleViewCommands = (session: Session) => {
     setSelectedSession(session);
@@ -153,6 +174,7 @@ const AccountSessionPage = () => {
                     <TableCell sx={{ fontWeight: "bold" }} align="right">
                       Récapitulatif
                     </TableCell>
+                    <TableCell />
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -174,6 +196,11 @@ const AccountSessionPage = () => {
                           Récapitulatif
                         </Button>
                       </TableCell>
+                      <TableCell align="right">
+                        <IconButton size="small" color="error" onClick={() => setSessionToDelete(session)}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -193,6 +220,22 @@ const AccountSessionPage = () => {
         onClose={handleCloseSummaryModal}
         session={selectedSession}
       />
+      <Dialog open={!!sessionToDelete} onClose={() => setSessionToDelete(null)}>
+        <DialogTitle>Supprimer la session</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Supprimer la session du {sessionToDelete ? getFormattedDate(sessionToDelete.createdAt) : ""} ? Toutes les commandes associées seront supprimées. Cette action est irréversible.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={() => setSessionToDelete(null)} disabled={deleting}>
+            Annuler
+          </Button>
+          <Button variant="contained" color="error" onClick={handleConfirmDeleteSession} disabled={deleting}>
+            Supprimer
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
