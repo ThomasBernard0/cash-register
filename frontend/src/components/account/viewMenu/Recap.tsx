@@ -95,7 +95,7 @@ const CartRecap: React.FC<Props> = ({ cart, resetCart }) => {
         </Box>
         <Box sx={{ flexShrink: 0, mt: 2 }}>
           <Button
-            sx={{ height: "80px" }}
+            sx={{ height: "80px", fontSize: "1.5rem", fontWeight: "bold" }}
             variant="contained"
             fullWidth
             onClick={() => setIsConfirmPaymentModalOpen(true)}

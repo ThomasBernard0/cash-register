@@ -45,8 +45,8 @@ const ItemCard: React.FC<Props> = ({
         }}
         onClick={() => addToCart(item.sectionId, sectionTitle, item)}
       >
-        <Typography variant="h6">{item.label}</Typography>
-        <Typography variant="h6">{(item.priceInCent / 100).toFixed(2)}€</Typography>
+        <Typography variant="h6" fontWeight="bold">{item.label}</Typography>
+        <Typography variant="h6" fontWeight="bold">{(item.priceInCent / 100).toFixed(2)}€</Typography>
       </CardContent>
       <Button
         sx={{
@@ -64,7 +64,7 @@ const ItemCard: React.FC<Props> = ({
         }}
         onClick={() => removeFromCart(item.sectionId, item.id)}
       >
-        <Typography variant="h6">{count}</Typography>
+        <Typography variant="h6" fontWeight="bold">{count}</Typography>
         <RemoveIcon sx={{ fontSize: 18 }} />
       </Button>
     </Card>
