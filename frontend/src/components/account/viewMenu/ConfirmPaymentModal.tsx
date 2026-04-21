@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 type Props = {
   open: boolean;
@@ -32,13 +33,14 @@ const ConfirmPaymentModal: React.FC<Props> = ({
     setTimeout(() => setPressedKey(null), 150);
   };
 
-  const getChangeReturn = (priceInCent: number, given: string): string => {
+  const getChangeReturn = (priceInCent: number, given: string): number => {
     const givenInCent = parseFloat(given) * 100;
     const changeReturn = (givenInCent - priceInCent) / 100;
-    return isNaN(changeReturn)
-      ? (priceInCent / 100).toFixed(2)
-      : changeReturn.toFixed(2);
+    return isNaN(changeReturn) ? -priceInCent / 100 : changeReturn;
   };
+
+  const changeReturn = getChangeReturn(priceInCent, given);
+  const isInsufficient = changeReturn < 0;
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -107,9 +109,13 @@ const ConfirmPaymentModal: React.FC<Props> = ({
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Rendu monnaie
             </Typography>
-            <Typography variant="h6">
-              {getChangeReturn(priceInCent, given)}€
-            </Typography>
+            <Box sx={{ height: "2rem", display: "flex", alignItems: "center" }}>
+              {isInsufficient ? (
+                <ErrorOutlineIcon color="error" sx={{ fontSize: "1.5rem" }} />
+              ) : (
+                <Typography variant="h6">{changeReturn.toFixed(2)}€</Typography>
+              )}
+            </Box>
           </Box>
         </Box>
         <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={1}>
@@ -136,7 +142,7 @@ const ConfirmPaymentModal: React.FC<Props> = ({
           )}
         </Box>
         <Box sx={{ mt: "auto", pt: 2 }}>
-          <Button variant="contained" fullWidth onClick={onConfirm}>
+          <Button variant="contained" fullWidth onClick={onConfirm} disabled={isInsufficient}>
             Confirmer
           </Button>
         </Box>
