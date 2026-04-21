@@ -19,7 +19,7 @@ const SectionBlock: React.FC<Props> = ({
 }) => {
   return (
     <Box mb={4}>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         {section.title}
       </Typography>
       <Grid container spacing={2}>
