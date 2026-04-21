@@ -15,6 +15,7 @@ const ConfirmPaymentModal: React.FC<Props> = ({
   onConfirm,
 }) => {
   const [given, setGiven] = useState<string>("");
+  const [pressedKey, setPressedKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) {
@@ -27,6 +28,8 @@ const ConfirmPaymentModal: React.FC<Props> = ({
     else if (digit === "←") setGiven(given.slice(0, -1));
     else if (given.charAt(given.length - 3) === ".") return;
     else setGiven(given + digit);
+    setPressedKey(digit);
+    setTimeout(() => setPressedKey(null), 150);
   };
 
   const getChangeReturn = (priceInCent: number, given: string): string => {
@@ -46,11 +49,13 @@ const ConfirmPaymentModal: React.FC<Props> = ({
           left: "50%",
           transform: "translate(-50%, -50%)",
           bgcolor: "background.paper",
-          p: 4,
+          p: { xs: 2, sm: 4 },
           borderRadius: 2,
           boxShadow: 24,
-          width: "40%",
-          height: "70%",
+          width: { xs: "95%", sm: "70%", md: "40%" },
+          height: "auto",
+          maxHeight: "95vh",
+          overflowY: "auto",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -115,11 +120,14 @@ const ConfirmPaymentModal: React.FC<Props> = ({
                 variant="outlined"
                 onClick={() => handleClick(digit)}
                 sx={{
-                  minHeight: 60,
-                  minWidth: 80,
-                  fontSize: "24px",
+                  minHeight: { xs: 44, sm: 60 },
+                  minWidth: { xs: 55, sm: 80 },
+                  fontSize: { xs: "18px", sm: "24px" },
                   fontWeight: "bold",
-                  padding: 2,
+                  padding: { xs: 1, sm: 2 },
+                  bgcolor: pressedKey === digit ? "primary.main" : undefined,
+                  color: pressedKey === digit ? "primary.contrastText" : undefined,
+                  transition: "background-color 0.15s, color 0.15s",
                 }}
               >
                 {digit}
