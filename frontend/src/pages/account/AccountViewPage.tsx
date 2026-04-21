@@ -83,7 +83,7 @@ const AccountViewPage: React.FC = () => {
   return (
     <>
       <AccountNavbar />
-      <Box sx={{ display: "flex", height: "calc(100vh - 64px)" }}>
+      <Box sx={{ display: "flex", height: "calc(100dvh - 64px)" }}>
         <Box
           sx={{
             width: "75%",
@@ -102,7 +102,7 @@ const AccountViewPage: React.FC = () => {
           sx={{
             position: "sticky",
             top: 0,
-            height: "calc(100vh - 64px)",
+            height: "calc(100dvh - 64px)",
             width: "25%",
             bgcolor: "#e0e0e0",
             p: 2,
