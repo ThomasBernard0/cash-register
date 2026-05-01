@@ -107,7 +107,7 @@ const ConfirmPaymentModal: React.FC<Props> = ({
           </Typography>
           {paymentMethod === "card" && (
             <Typography variant="caption" color="text.secondary">
-              dont frais carte {(CARD_FEE_RATE * 100).toFixed(1)}% (
+              dont frais carte {(CARD_FEE_RATE * 100).toFixed(2)}% (
               {((priceInCent - basePriceInCent) / 100).toFixed(2)}€)
             </Typography>
           )}
