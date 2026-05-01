@@ -46,7 +46,7 @@ const SessionSummaryModal = ({ open, onClose, session }: Props) => {
         }
         const sorted = Object.entries(totals)
           .map(([label, quantity]) => ({ label, quantity }))
-          .sort((a, b) => a.label.localeCompare(b.label));
+          .sort((a, b) => b.quantity - a.quantity);
         setAggregated(sorted);
       })
       .catch(() => setError("Impossible de charger le récapitulatif."))
