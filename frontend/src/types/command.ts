@@ -32,5 +32,6 @@ export type Command = {
   createdAt: Date;
   type: string;
   status: string;
+  paymentMethod: 'cash' | 'card';
   items: CommandItem[];
 };

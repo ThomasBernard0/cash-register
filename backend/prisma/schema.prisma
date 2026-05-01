@@ -59,6 +59,7 @@ model Command {
   createdAt        DateTime      @default(now())
   type             CommandType
   status           CommandStatus
+  paymentMethod    PaymentMethod
   session          Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId        String
 }
@@ -71,6 +72,11 @@ enum CommandType {
 enum CommandStatus {
   pending
   validated
+}
+
+enum PaymentMethod {
+  cash
+  card
 }
 
 model CommandItem {

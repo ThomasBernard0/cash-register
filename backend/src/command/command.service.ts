@@ -2,7 +2,12 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommandDto } from './command.dto';
 import { SessionService } from 'src/session/session.service';
-import { CommandStatus, CommandType } from '@prisma/client';
+import { CommandStatus, CommandType, PaymentMethod } from '@prisma/client';
+
+const CARD_FEE_RATE = 0.015;
+
+const applyFee = (baseInCent: number, method: PaymentMethod): number =>
+  method === PaymentMethod.card ? Math.ceil(baseInCent * (1 + CARD_FEE_RATE)) : baseInCent;
 
 @Injectable()
 export class CommandService {
@@ -29,31 +34,31 @@ export class CommandService {
           total: product.priceInCent * item.quantity,
         };
       });
-      const totalPrice = itemsWithPrice.reduce((sum, i) => sum + i.total, 0);
+      const basePrice = itemsWithPrice.reduce((sum, i) => sum + i.total, 0);
+      const totalPrice = applyFee(basePrice, command.paymentMethod);
 
-      await this.prisma.command.create({
-        data: {
-          session: { connect: { id: activeSession.id } },
-          totalPriceInCent: totalPrice,
-          type: CommandType.internal,
-          status: CommandStatus.validated,
-          items: {
-            create: itemsWithPrice.map((item) => ({
-              label: item.label,
-              priceInCent: item.priceInCent,
-              quantity: item.quantity,
-            })),
+      await this.prisma.$transaction(async (tx) => {
+        await tx.command.create({
+          data: {
+            session: { connect: { id: activeSession.id } },
+            totalPriceInCent: totalPrice,
+            type: CommandType.internal,
+            status: CommandStatus.validated,
+            paymentMethod: command.paymentMethod,
+            items: {
+              create: itemsWithPrice.map((item) => ({
+                label: item.label,
+                priceInCent: item.priceInCent,
+                quantity: item.quantity,
+              })),
+            },
           },
-        },
-      });
+        });
 
-      await this.prisma.session.update({
-        where: { id: activeSession.id },
-        data: {
-          totalRevenueInCent: {
-            increment: totalPrice,
-          },
-        },
+        await tx.session.update({
+          where: { id: activeSession.id },
+          data: { totalRevenueInCent: { increment: totalPrice } },
+        });
       });
 
       return { message: 'Commande créée avec succès.' };

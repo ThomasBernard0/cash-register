@@ -3,6 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { type Cart, type OrderItem } from "../../../types/command";
 import ConfirmPaymentModal from "./ConfirmPaymentModal";
 import { createCommand } from "../../../api/command";
+import type { PaymentMethod } from "../../../constants/payment";
 
 type Props = {
   cart: Cart;
@@ -29,7 +30,7 @@ const CartRecap: React.FC<Props> = ({ cart, resetCart }) => {
     setIsConfirmPaymentModalOpen(false);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (paymentMethod: PaymentMethod) => {
     const items: OrderItem[] = [];
     for (const sectionId in cart) {
       const section = cart[sectionId];
@@ -41,7 +42,7 @@ const CartRecap: React.FC<Props> = ({ cart, resetCart }) => {
         });
       }
     }
-    await createCommand(items);
+    await createCommand(items, paymentMethod);
     resetCart();
     handleCloseModal();
   };
@@ -106,7 +107,7 @@ const CartRecap: React.FC<Props> = ({ cart, resetCart }) => {
       </Box>
       <ConfirmPaymentModal
         open={isConfirmPaymentModalOpen}
-        priceInCent={getCartTotalInCent(cart)}
+        basePriceInCent={getCartTotalInCent(cart)}
         onClose={handleCloseModal}
         onConfirm={handleConfirm}
       />

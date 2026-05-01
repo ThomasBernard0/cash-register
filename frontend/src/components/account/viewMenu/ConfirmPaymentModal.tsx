@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import { Modal, Box, Typography, Button, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { CARD_FEE_RATE, type PaymentMethod } from "../../../constants/payment";
 
 type Props = {
   open: boolean;
-  priceInCent: number;
+  basePriceInCent: number;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (paymentMethod: PaymentMethod) => void;
 };
 
-const ConfirmPaymentModal: React.FC<Props> = ({
-  open,
-  priceInCent,
-  onClose,
-  onConfirm,
-}) => {
+const ConfirmPaymentModal: React.FC<Props> = ({ open, basePriceInCent, onClose, onConfirm }) => {
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
   const [given, setGiven] = useState<string>("");
   const [pressedKey, setPressedKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) {
       setGiven("");
+      setPaymentMethod("cash");
     }
   }, [open]);
+
+  const priceInCent =
+    paymentMethod === "card" ? Math.ceil(basePriceInCent * (1 + CARD_FEE_RATE)) : basePriceInCent;
 
   const handleClick = (digit: string) => {
     if (digit === "." && (given === "" || given.includes("."))) return;
@@ -40,7 +41,7 @@ const ConfirmPaymentModal: React.FC<Props> = ({
   };
 
   const changeReturn = getChangeReturn(priceInCent, given);
-  const isInsufficient = changeReturn < 0;
+  const isInsufficient = paymentMethod === "cash" && changeReturn < 0;
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -61,88 +62,91 @@ const ConfirmPaymentModal: React.FC<Props> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          gap: 2,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            mb: 2,
-          }}
+        <ToggleButtonGroup
+          value={paymentMethod}
+          exclusive
+          onChange={(_, value) => { if (value) setPaymentMethod(value); }}
+          fullWidth
         >
+          <ToggleButton value="cash">Espèces</ToggleButton>
+          <ToggleButton value="card">Carte</ToggleButton>
+        </ToggleButtonGroup>
+
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Prix totale
+            Prix total
           </Typography>
-          <Typography variant="h6">
-            {(priceInCent / 100).toFixed(2)}€
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-around",
-            mb: 4,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Montant remis
+          <Typography variant="h6">{(priceInCent / 100).toFixed(2)}€</Typography>
+          {paymentMethod === "card" && (
+            <Typography variant="caption" color="text.secondary">
+              dont frais carte {(CARD_FEE_RATE * 100).toFixed(1)}% ({((priceInCent - basePriceInCent) / 100).toFixed(2)}€)
             </Typography>
-            <Typography variant="h6">{given !== "" ? given : "0"}€</Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              mb: 4,
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Rendu monnaie
-            </Typography>
-            <Box sx={{ height: "2rem", display: "flex", alignItems: "center" }}>
-              {isInsufficient ? (
-                <ErrorOutlineIcon color="error" sx={{ fontSize: "1.5rem" }} />
-              ) : (
-                <Typography variant="h6">{changeReturn.toFixed(2)}€</Typography>
-              )}
-            </Box>
-          </Box>
-        </Box>
-        <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={1}>
-          {["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "←"].map(
-            (digit) => (
-              <Button
-                key={digit}
-                variant="outlined"
-                onClick={() => handleClick(digit)}
-                sx={{
-                  minHeight: { xs: 44, sm: 60 },
-                  minWidth: { xs: 55, sm: 80 },
-                  fontSize: { xs: "18px", sm: "24px" },
-                  fontWeight: "bold",
-                  padding: { xs: 1, sm: 2 },
-                  bgcolor: pressedKey === digit ? "primary.main" : undefined,
-                  color: pressedKey === digit ? "primary.contrastText" : undefined,
-                  transition: "background-color 0.15s, color 0.15s",
-                }}
-              >
-                {digit}
-              </Button>
-            )
           )}
         </Box>
-        <Box sx={{ mt: "auto", pt: 2 }}>
-          <Button variant="contained" fullWidth onClick={onConfirm} disabled={isInsufficient}>
+
+        {paymentMethod === "cash" && (
+          <>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-around",
+              }}
+            >
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  Montant remis
+                </Typography>
+                <Typography variant="h6">{given !== "" ? given : "0"}€</Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  Rendu monnaie
+                </Typography>
+                <Box sx={{ height: "2rem", display: "flex", alignItems: "center" }}>
+                  {isInsufficient ? (
+                    <ErrorOutlineIcon color="error" sx={{ fontSize: "1.5rem" }} />
+                  ) : (
+                    <Typography variant="h6">{changeReturn.toFixed(2)}€</Typography>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+
+            <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={1}>
+              {["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "←"].map((digit) => (
+                <Button
+                  key={digit}
+                  variant="outlined"
+                  onClick={() => handleClick(digit)}
+                  sx={{
+                    minHeight: { xs: 44, sm: 60 },
+                    minWidth: { xs: 55, sm: 80 },
+                    fontSize: { xs: "18px", sm: "24px" },
+                    fontWeight: "bold",
+                    padding: { xs: 1, sm: 2 },
+                    bgcolor: pressedKey === digit ? "primary.main" : undefined,
+                    color: pressedKey === digit ? "primary.contrastText" : undefined,
+                    transition: "background-color 0.15s, color 0.15s",
+                  }}
+                >
+                  {digit}
+                </Button>
+              ))}
+            </Box>
+          </>
+        )}
+
+        <Box sx={{ width: "100%", mt: "auto", pt: 1 }}>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => onConfirm(paymentMethod)}
+            disabled={isInsufficient}
+          >
             Confirmer
           </Button>
         </Box>
