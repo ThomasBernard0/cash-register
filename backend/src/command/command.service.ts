@@ -4,7 +4,7 @@ import { CommandDto } from './command.dto';
 import { SessionService } from 'src/session/session.service';
 import { CommandStatus, CommandType, PaymentMethod } from '@prisma/client';
 
-const CARD_FEE_RATE = 0.015;
+const CARD_FEE_RATE = 0.0175;
 
 const applyFee = (baseInCent: number, method: PaymentMethod): number =>
   method === PaymentMethod.card ? Math.ceil(baseInCent * (1 + CARD_FEE_RATE)) : baseInCent;

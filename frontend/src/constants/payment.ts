@@ -1,3 +1,3 @@
-export const CARD_FEE_RATE = 0.015;
+export const CARD_FEE_RATE = 0.0175;
 
-export type PaymentMethod = 'cash' | 'card';
+export type PaymentMethod = "cash" | "card";
