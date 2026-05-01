@@ -8,7 +8,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { CARD_FEE_RATE, type PaymentMethod } from "../../../constants/payment";
+import { CARD_FEE_CENT, type PaymentMethod } from "../../../constants/payment";
 
 type Props = {
   open: boolean;
@@ -36,7 +36,7 @@ const ConfirmPaymentModal: React.FC<Props> = ({
 
   const priceInCent =
     paymentMethod === "card"
-      ? Math.ceil(basePriceInCent * (1 + CARD_FEE_RATE))
+      ? basePriceInCent + CARD_FEE_CENT
       : basePriceInCent;
 
   const handleClick = (digit: string) => {
@@ -107,8 +107,7 @@ const ConfirmPaymentModal: React.FC<Props> = ({
           </Typography>
           {paymentMethod === "card" && (
             <Typography variant="caption" color="text.secondary">
-              dont frais carte {(CARD_FEE_RATE * 100).toFixed(2)}% (
-              {((priceInCent - basePriceInCent) / 100).toFixed(2)}€)
+              dont frais carte +{(CARD_FEE_CENT / 100).toFixed(2)}€
             </Typography>
           )}
         </Box>
